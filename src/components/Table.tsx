@@ -25,7 +25,7 @@ export default function Table({ columns, data, variant }: Props) {
 
   // Render the UI for your table
   return (
-    <RTable  variant={variant || 'striped'} {...getTableProps()}>
+    <RTable  variant={variant || 'simple'} {...getTableProps()}>
       <Thead>
         {headerGroups.map(headerGroup => (
           <Tr {...headerGroup.getHeaderGroupProps()}>
