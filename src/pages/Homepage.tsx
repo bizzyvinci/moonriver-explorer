@@ -1,5 +1,8 @@
 import React from 'react'
+import { Heading, Box } from '@chakra-ui/react'
 import Table from '../components/Table'
+import Overview from '../components/Overview'
+import Tabs from '../components/Tabs'
 
 
 const columns = [
@@ -14,9 +17,24 @@ const data = [
   {'col-1': 5, 'col-2': 2, 'col-3': 3}
 ]
 
+const tabData = [
+  {
+    label: 'Overview',
+    content: <Overview />,
+  },
+  {
+    label: 'Table',
+    content: <Table data={data} columns={columns} />,
+  },
+]
 
 export default function Homepage() {
 	return (
-		<Table data={data} columns={columns} />
+    <Box>
+      <Heading>Homepage</Heading>
+  		<Tabs data={tabData} />
+    </Box>
 	)
 }
+
+
