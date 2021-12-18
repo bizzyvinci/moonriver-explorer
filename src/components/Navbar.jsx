@@ -16,18 +16,22 @@ import {
   useColorModeValue,
   useBreakpointValue,
   useDisclosure,
+  useColorMode
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
   CloseIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  MoonIcon,
+  SunIcon
 } from '@chakra-ui/icons';
 import brandLogo from '../assets/moonriver-logo.svg'
 
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const { colorMode, toggleColorMode} = useColorMode()
 
   return (
     <Box>
@@ -41,7 +45,7 @@ export default function Navbar() {
         borderStyle={'solid'}
         borderColor={useColorModeValue('gray.200', 'gray.900')}
         align={'center'}
-        direction={['column', 'column', 'column', 'row']}
+        direction={{base: 'column', xl:'row'}}
         justify='space-between'>
         <Flex direction='row' w='-webkit-fill-available'>
           <Flex flex={{ base: 1 }}>
@@ -68,10 +72,16 @@ export default function Navbar() {
           </Flex>
         </Flex>
 
-        <Box w='-webkit-fill-available'
+        <Flex w='-webkit-fill-available'
           maxWidth='400px'>
           <Input placeholder='Search by address, block, transaction, extrinsic' />
-        </Box>
+          {colorMode === 'light' 
+            ? <IconButton aria-label='Switch to dark mode'
+                icon={<MoonIcon />} onClick={toggleColorMode} />
+            : <IconButton aria-label='Switch to light mode/>' 
+                icon={<SunIcon />} onClick={toggleColorMode} />
+          }
+        </Flex>
       </Flex>
 
       <Collapse in={isOpen} animateOpacity>
@@ -129,7 +139,7 @@ const DesktopNav = () => {
   );
 };
 
-const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
+const DesktopSubNav = ({ label, href, subLabel }) => {
   return (
     <Link
       href={href}
@@ -176,7 +186,7 @@ const MobileNav = () => {
   );
 };
 
-const MobileNavItem = ({ label, children, href }: NavItem) => {
+const MobileNavItem = ({ label, children, href }) => {
   const { isOpen, onToggle } = useDisclosure();
 
   return (
@@ -226,40 +236,40 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
   );
 };
 
-interface NavItem {
-  label: string;
-  subLabel?: string;
-  children?: Array<NavItem>;
-  href?: string;
-}
+// interface NavItem {
+//   label: string;
+//   subLabel?: string;
+//   children?: Array<NavItem>;
+//   href?: string;
+// }
 
-const NAV_ITEMS: Array<NavItem> = [
+const NAV_ITEMS = [
   {
     label: 'Home',
-    href: '#'
+    href: '/'
   },
   {
     label: 'Blockchain',
     children: [
       {
         label: 'Blocks',
-        href: '#',
+        href: '/blocks',
       },
       {
         label: 'Extrinsics',
-        href: '#',
+        href: '/extrinsics',
       },
       {
         label: 'Transactions',
-        href: '#',
+        href: '/transactions',
       },
       {
         label: 'Events',
-        href: '#',
+        href: '/events',
       },
       {
         label: 'Accounts',
-        href: '#',
+        href: '/accounts',
       },
     ],
   },
@@ -267,17 +277,30 @@ const NAV_ITEMS: Array<NavItem> = [
     label: 'Staking',
     children: [
       {
-        label: 'Collators',
-        href: '#',
+        label: 'Candidates',
+        href: '/candidates',
       },
       {
         label: 'Delegators',
-        href: '#',
+        href: '/delegators',
       },
       {
-        label: 'Votes',
+        label: 'Delegations',
         href: '#',
+      }
+    ],
+  },
+  {
+    label: 'Governance',
+    children: [
+      {
+        label: 'Referenda',
+        href: '/referenda',
       },
+      {
+        label: 'Proposals',
+        href: '/proposals',
+      }
     ],
   },
   {
@@ -285,15 +308,15 @@ const NAV_ITEMS: Array<NavItem> = [
     children: [
       {
         label: 'Moonriver (MOVR)',
-        href: '#',
+        href: '/transfers',
       },
       {
         label: 'ERC20 Tokens',
-        href: '#',
+        href: '/erc20-transfers',
       },
       {
         label: 'ERC721 Tokens',
-        href: '#',
+        href: '/erc721-transfers',
       },
     ]
   },

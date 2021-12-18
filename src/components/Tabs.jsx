@@ -2,7 +2,7 @@ import React from 'react'
 import { Tab, Tabs, TabList, TabPanel, TabPanels } from '@chakra-ui/react'
 
 
-export default function DataTabs({ data }: Props) {
+export default function DataTabs({ data }) {
   return (
     <Tabs>
       <TabList>
@@ -21,6 +21,6 @@ export default function DataTabs({ data }: Props) {
   )
 }
 
-export interface SingleData {label: string; content?: any}
-export interface Data extends Array<SingleData> {}
-export interface Props {data: Data}
+// export interface SingleData {label: string; content?: any}
+// export interface Data extends Array<SingleData> {}
+// export interface Props {data: Data}

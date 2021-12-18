@@ -10,7 +10,7 @@ import {
 import { useTable } from 'react-table'
 
 
-export default function Table({ columns, data, variant }: Props) {
+export default function Table({ columns, data, variant }) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -52,8 +52,8 @@ export default function Table({ columns, data, variant }: Props) {
 }
 
 
-export interface Column {Header: string; accessor: string}
-export interface Columns extends Array<Column> {}
-export interface SingleData { [index: string]: any; }
-export interface Data extends Array<SingleData> {}
-export interface Props {columns: Columns; data: Data; variant?: string}
+// export interface Column {Header: string; accessor: string}
+// export interface Columns extends Array<Column> {}
+// export interface SingleData { [index: string]: any; }
+// export interface Data extends Array<SingleData> {}
+// export interface Props {columns: Columns; data: Data; variant?: string}
