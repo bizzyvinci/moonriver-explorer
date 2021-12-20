@@ -19,7 +19,6 @@ const query = gql`
       }
     }
   }
-
 `
 
 const variables = {

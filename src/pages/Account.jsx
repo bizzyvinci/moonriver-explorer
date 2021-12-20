@@ -11,38 +11,107 @@ import Overview from '../components/Overview'
 
 const query = gql`
   query($id: String!) {
-    block(id: $id) {
+    account(id: $id) {
       id
-      hash
-      parentHash
-      specVersion
-      stateRoot
-      size
-      timestamp
-      extrinsics(orderBy: INDEX_ASC) {
-        nodes {
-          id
-          section
-          method
+      freeBalance
+      reservedBalance
+      totalBalance
+      isContract
+      creatorId
+      createdAt
+    }
+    eRC20Balances(filter: {accountId: {equalTo: $id}}) {
+      nodes {
+        token
+        value
+      }
+    }
+    eRC721Balances(filter: {accountId: {equalTo: $id}}) {
+      nodes {
+        token
+        value
+      }
+    }
+    extrinsics(orderBy: [BLOCK_NUMBER_DESC, INDEX_DESC], filter: {signerId: {equalTo: $id}}) {
+      nodes {
+        id
+        block {id, timestamp}
+        section
+        method
+      }
+    }
+    transactions(orderBy: [BLOCK_NUMBER_DESC], filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+      nodes {
+        id
+        block {id, timestamp}
+        fromId
+        toId
+        success
+        value
+      }
+    }
+    transfers(orderBy: [BLOCK_NUMBER_DESC, INDEX_DESC], filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+      nodes {
+        id
+        extrinsicId
+        block {id, timestamp}
+        fromId
+        toId
+        value
+      }
+    }
+    eRC20Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+      nodes {
+        id
+        fromId
+        toId
+        tokenId
+        value
+        log {
+          transactionId
+          block {id, timestamp}
         }
       }
-      transactions {
+    }
+    eRC721Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+      nodes {
+        id
+        fromId
+        toId
+        tokenId
+        value
+        log {
+          transactionId
+          block {id, timestamp}
+        }
+      }
+    }
+    candidate(id: $id) {
+      id
+      selfBonded
+      delegations {
         nodes {
-          id
-          fromId
-          toId
+          delegatorId
+          candidateId
           value
         }
       }
-      events(orderBy: INDEX_ASC) {
+    }
+    delegator(id: $id) {
+      id
+      delegations {
         nodes {
-          id
-          extrinsicId
-          section
-          method
-          docs
-          data
+          delegatorId
+          candidateId
+          value
         }
+      }
+    }
+    rewards(filter: {accountId: {equalTo: $id}}, orderBy: BLOCK_NUMBER_DESC) {
+      nodes {
+        blockNumber
+        value
+        timestamp
       }
     }
   }
@@ -76,18 +145,9 @@ export default function Block() {
   }, [])
 
   const tabData = [
-    {
-      label: 'Extrinsics', 
-      content: extrinsics.data?.length > 0 && <Table {...extrinsics} />
-    },
-    {
-      label: 'Transactions',
-      content: transactions.data?.length > 0 && <Table {...transactions} />
-    },
-    {
-      label: 'Events',
-      content: events.data?.length > 0 && <Table {...events} />
-    },
+    {label: 'Extrinsics', content: <Table {...extrinsics} />},
+    {label: 'Transactions', content: <Table {...transactions} />},
+    {label: 'Events', content: <Table {...events} />},
   ]
 
   return (

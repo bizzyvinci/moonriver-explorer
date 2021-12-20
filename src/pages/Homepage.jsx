@@ -17,7 +17,7 @@ const query = gql`
         events {totalCount}
       }
     }
-    extrinsics(first: $limit, orderBy: INDEX_ASC) {
+    extrinsics(first: $limit, orderBy: [BLOCK_NUMBER_DESC, INDEX_ASC]) {
       nodes {
         id
         block {id, timestamp}
@@ -25,7 +25,7 @@ const query = gql`
         method
       }
     }
-    transactions(first: $limit) {
+    transactions(first: $limit, orderBy: [BLOCK_NUMBER_DESC, ID_ASC]) {
       nodes {
         id
         block {id, timestamp}
@@ -34,7 +34,7 @@ const query = gql`
         value
       }
     }
-    candidates(first: $limit, filter: {isChosen: {equalTo: true}}) {
+    candidates(first: $limit, filter: {isChosen: {equalTo: true}}, orderBy:[SELF_BONDED_DESC]) {
       nodes {
         id
         joinedExtrinsicId
@@ -62,19 +62,23 @@ export default function Homepage() {
     async function getData() {
       const res = await request(Config.endpoint, query, variables)
       console.log(res)
-      const blockP = processBlocks(res.blocks.nodes)
-      const extrinsicP = processExtrinsics(res.extrinsics.nodes)
-      const transactionP = processTransactions(res.transactions.nodes)
-      const candidateP = processCandidates(res.candidates.nodes)
-      const P = [blockP, extrinsicP, transactionP, candidateP]
-      console.log(P)
-      return P
+      const blockParams = processBlocks(res.blocks.nodes)
+      const extrinsicParams = processExtrinsics(res.extrinsics.nodes)
+      const transactionParams = processTransactions(res.transactions.nodes)
+      const candidateParams = processCandidates(res.candidates.nodes)
+      const params = {
+        block: blockParams, 
+        extrinsic: extrinsicParams, 
+        transaction: transactionParams, 
+        candidate: candidateParams}
+      console.log(params)
+      return params
     }
-    getData().then(([blockP, extrinsicP, transactionP, candidateP]) => {
-      setBlocks(blockP)
-      setExtrinsics(extrinsicP)
-      setTransactions(transactionP)
-      setCandidates(candidateP)
+    getData().then((params) => {
+      setBlocks(params.block)
+      setExtrinsics(params.extrinsic)
+      setTransactions(params.transaction)
+      setCandidates(params.candidate)
     })
   }, [])
 
@@ -107,7 +111,7 @@ export default function Homepage() {
 
 function processBlocks(nodes) {
   const data = nodes.map(d => {return {
-    id: d.id,
+    id: <Link href={'block/'+d.id} color='blue.600'> {d.id} </Link>,
     date: d.timestamp,
     extrinsics: d.extrinsics.totalCount,
     transactions: d.transactions.totalCount,
@@ -128,8 +132,8 @@ function processBlocks(nodes) {
 
 function processExtrinsics(nodes) {
   const data = nodes.map(d => {return {
-    id: d.id,
-    block: d.block.id,
+    id: <Link href={'extrinsic/'+d.id} color='blue.600'> {d.id} </Link>,
+    block: <Link href={'block/'+d.block.id} color='blue.600'> {d.block.id} </Link>,
     date: d.block.timestamp,
     section: d.section,
     method: d.method,
@@ -149,8 +153,8 @@ function processExtrinsics(nodes) {
 
 function processTransactions(nodes) {
   const data = nodes.map(d => {return {
-    id: d.id,
-    block: d.block.id,
+    id: <Link href={'transaction/'+d.id} color='blue.600'> {d.id} </Link>,
+    block: <Link href={'block/'+d.block.id} color='blue.600'> {d.block.id} </Link>,
     date: d.block.timestamp,
     from: d.fromId,
     to: d.toId,
@@ -171,8 +175,8 @@ function processTransactions(nodes) {
 
 function processCandidates(nodes) {
   const data = nodes.map(d => {return {
-    id: d.id,
-    joined: d.joinedExtrinsic,
+    id: <Link href={'candidate/'+d.id} color='blue.600'> {d.id} </Link>,
+    joined: <Link href={'extrinsic/'+d.joinedExtrinsic} color='blue.600'> {d.joinedExtrinsic} </Link>,
     selfBonded: d.selfBonded,
     delegator: d.delegations.totalCount
   }})

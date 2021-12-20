@@ -12,6 +12,7 @@ import Accounts from './pages/Accounts'
 import Candidates from './pages/Candidates'
 import Delegators from './pages/Delegators'
 import Block from './pages/Block'
+import Extrinsic from './pages/Extrinsic'
 
 
 const linkPage = [
@@ -34,7 +35,7 @@ const linkPage = [
   // {path: '/erc721-transfers', component: <Homepage />},
 
   {path: '/block/:id', children: <Block />},
-  {path: '/extrinsic/:id', children: <Homepage />},
+  {path: '/extrinsic/:id', children: <Extrinsic />},
   {path: '/transaction/:id', children: <Homepage />},
   {path: '/account/:id', children: <Homepage />},
 
@@ -49,6 +50,7 @@ function App() {
       <Router>
         <Navbar />
         <Warning />
+        <br />
         <Switch>
           {linkPage.map((obj) => {
             if (obj.component) {
