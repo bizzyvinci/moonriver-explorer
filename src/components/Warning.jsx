@@ -8,7 +8,7 @@ import {
   CloseButton
 } from '@chakra-ui/react'
 import { request, gql } from 'graphql-request'
-import { Config } from '../utils'
+import { ENDPOINT } from '../utils'
 
 
 const query = gql`
@@ -26,7 +26,7 @@ export default function Warning() {
 
   useEffect(() => {
     async function getData() {
-      const res = await request(Config.endpoint, query)
+      const res = await request(ENDPOINT, query)
       //console.log(res)
       const d = res._metadata
       return [d.lastProcessedHeight, d.targetHeight]

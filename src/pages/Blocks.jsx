@@ -1,66 +1,41 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { Heading } from '@chakra-ui/react'
 import { request, gql } from 'graphql-request'
-import { Config } from '../utils'
+import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
+import Pagination from '../components/Pagination'
+import { query, pageQuery, variables, processBlocks } from './data/Blocks'
 
-
-const query = gql`
-  query($limit: Int, $orderBy: [BlocksOrderBy!]) {
-    blocks(first: $limit, orderBy: $orderBy) {
-      nodes {
-        id
-        timestamp
-        extrinsics {totalCount}
-        transactions {totalCount}
-        events {totalCount}
-      }
-    }
-  }
-
-`
-
-const variables = {
-  limit: 50,
-  orderBy: "NUMBER_DESC"
-}
 
 export default function Blocks() {
-  const defaultP = {data: [], columns: []}
-  const [blocks, setBlocks] = useState(defaultP)
+  const defaultParams = {data: [], columns: []}
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPage, setTotalPage] = useState(0)
+  const [blocks, setBlocks] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
-      const res = await request(Config.endpoint, query, variables)
-      console.log(res)
-      const blockP = processBlocks(res.blocks.nodes)
-      return blockP
+      variables.offset = currentPage * variables.limit
+      const res = await request(ENDPOINT, query, variables)
+      const pageRes = await request(ENDPOINT, pageQuery, variables)
+      console.log(res, pageRes)
+      setTotalPage((pageRes.blocks.totalCount
+        ? Math.floor(pageRes.blocks.totalCount / variables.limit)
+        : 0))
+      //console.log(totalPage)
+      const blockParams = processBlocks(res.blocks.nodes)
+      return blockParams
     }
-    getData().then(blockP => setBlocks(blockP))
-  }, [])
+    getData().then(blockParams => setBlocks(blockParams))
+  }, [currentPage])
 
   return (
-    <Table {...blocks} />
+    <>
+      <Heading>Blocks</Heading>
+      <br />
+      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...blocks} />
+    </>
   )
 }
 
-
-function processBlocks(nodes) {
-  const data = nodes.map(d => {return {
-    id: d.id,
-    date: d.timestamp,
-    extrinsics: d.extrinsics.totalCount,
-    transactions: d.transactions.totalCount,
-    events: d.events.totalCount
-  }})
-
-  const columns = [
-    {Header: 'Block', accessor: 'id'},
-    {Header: 'Date', accessor: 'date'},
-    {Header: 'Extrinsics', accessor: 'extrinsics'},
-    {Header: 'Transactions', accessor: 'transactions'},
-    {Header: 'Events', accessor: 'events'},
-  ]
-
-  return {data: data, columns: columns}
-}

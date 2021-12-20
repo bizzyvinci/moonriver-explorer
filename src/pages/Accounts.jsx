@@ -1,63 +1,37 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { request, gql } from 'graphql-request'
-import bigInt from 'big-integer'
-import { Config } from '../utils'
+import { Heading } from '@chakra-ui/react'
+import { request } from 'graphql-request'
+import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
+import { query, pageQuery, variables, processAccounts } from './data/Accounts'
 
-
-const query = gql`
-  query($limit: Int, $orderBy: [AccountsOrderBy!]) {
-    accounts(first: $limit, orderBy: $orderBy) {
-      nodes {
-        id
-        freeBalance
-        reservedBalance
-      }
-    }
-  }
-
-`
-
-const variables = {
-  limit: 50,
-  orderBy: "FREE_BALANCE_DESC"
-}
 
 export default function Blocks() {
-  const defaultP = {data: [], columns: []}
-  const [accounts, setAccounts] = useState(defaultP)
+  const defaultParams = {data: [], columns: []}
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPage, setTotalPage] = useState(0)
+  const [accounts, setAccounts] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
-      const res = await request(Config.endpoint, query, variables)
-      console.log(res)
-      const accountP = processAccounts(res.accounts.nodes)
-      return accountP
+      const res = await request(ENDPOINT, query, variables)
+      const pageRes = await request(ENDPOINT, pageQuery, variables)
+      console.log(res, pageRes)
+      setTotalPage((pageRes.accounts.totalCount
+        ? Math.floor(pageRes.accounts.totalCount / variables.limit)
+        : 0))
+      const accountParams = processAccounts(res.accounts.nodes)
+      return accountParams
     }
-    getData().then(accountP => setAccounts(accountP))
+    getData().then(accountParams => setAccounts(accountParams))
   }, [])
 
   return (
-    <Table {...accounts} />
+    <>
+      <Heading>Accounts</Heading>
+      <br />
+      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...accounts} />
+    </>
   )
-}
-
-
-function processAccounts(nodes) {
-  const data = nodes.map(d => {return {
-    id: d.id,
-    freeBalance: d.freeBalance,
-    reservedBalance: d.reservedBalance,
-    totalBalance: (bigInt(d.freeBalance) + bigInt(d.reservedBalance))
-  }})
-
-  const columns = [
-    {Header: 'Account', accessor: 'id'},
-    {Header: 'Free Balance', accessor: 'freeBalance'},
-    {Header: 'Reserved Balance', accessor: 'reservedBalance'},
-    {Header: 'Total Balance', accessor: 'totalBalance'}
-  ]
-
-  return {data: data, columns: columns}
 }

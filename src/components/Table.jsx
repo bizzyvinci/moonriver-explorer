@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Table as RTable,
+  Table as CTable,
   Thead,
   Tbody,
   Tr,
@@ -8,9 +8,10 @@ import {
   Td,
 } from '@chakra-ui/react'
 import { useTable } from 'react-table'
+import Pagination from './Pagination'
 
 
-export default function Table({ columns, data, variant }) {
+export default function Table({ columns, data, variant, currentPage, totalPage, goToPage }) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -25,29 +26,32 @@ export default function Table({ columns, data, variant }) {
 
   // Render the UI for your table
   return (
-    <RTable  variant={variant || 'simple'} {...getTableProps()}>
-      <Thead>
-        {headerGroups.map(headerGroup => (
-          <Tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
-            ))}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
-          prepareRow(row)
-          return (
-            <Tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
-              })}
+    <>
+      <CTable  variant={variant || 'simple'} {...getTableProps()}>
+        <Thead>
+          {headerGroups.map(headerGroup => (
+            <Tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
+              ))}
             </Tr>
-          )
-        })}
-      </Tbody>
-    </RTable>
+          ))}
+        </Thead>
+        <Tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row)
+            return (
+              <Tr {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                })}
+              </Tr>
+            )
+          })}
+        </Tbody>
+      </CTable>
+      {totalPage > 0 && <Pagination currentPage={currentPage} totalPage={totalPage} goToPage={goToPage} />}
+    </>
   )
 }
 
