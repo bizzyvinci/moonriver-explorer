@@ -25,7 +25,7 @@ export default function Blocks() {
       return eventParams
     }
     getData().then(eventParams => setEvents(eventParams))
-  }, [])
+  }, [currentPage])
 
   return (
     <>

@@ -1,57 +1,37 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { CheckCircleIcon, CloseIcon } from '@chakra-ui/icons'
-import { request, gql } from 'graphql-request'
-import { Config } from '../utils'
+import { Heading } from '@chakra-ui/react'
+import { request } from 'graphql-request'
+import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
+import { query, pageQuery, variables, processDelegators } from './data/Delegators'
 
-
-const query = gql`
-  query($limit: Int, $orderBy: [DelegatorsOrderBy!]) {
-    delegators(first: $limit, orderBy: $orderBy) {
-      nodes {
-        id
-        delegations {totalCount}
-      }
-    }
-  }
-`
-
-const variables = {
-  limit: 50,
-  orderBy: "ID_ASC"
-}
 
 export default function Blocks() {
-  const defaultP = {data: [], columns: []}
-  const [delegators, setDelegators] = useState(defaultP)
+  const defaultParams = {data: [], columns: []}
+  const [currentPage, setCurrentPage] = useState(0)
+  const [totalPage, setTotalPage] = useState(0)
+  const [delegators, setDelegators] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
-      const res = await request(Config.endpoint, query, variables)
-      console.log(res)
-      const delegatorP = processDelegators(res.delegators.nodes)
-      return delegatorP
+      const res = await request(ENDPOINT, query, variables)
+      const pageRes = await request(ENDPOINT, pageQuery, variables)
+      console.log(res, pageRes)
+      setTotalPage((pageRes.delegators.totalCount
+        ? Math.floor(pageRes.delegators.totalCount / variables.limit)
+        : 0))
+      const delegatorParams = processDelegators(res.delegators.nodes)
+      return delegatorParams
     }
-    getData().then(delegatorP => setDelegators(delegatorP))
-  }, [])
+    getData().then(delegatorParams => setDelegators(delegatorParams))
+  }, [currentPage])
 
   return (
-    <Table {...delegators} />
+    <>
+      <Heading>Delegators</Heading>
+      <br />
+      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...delegators} />
+    </>
   )
-}
-
-
-function processDelegators(nodes) {
-  const data = nodes.map(d => {return {
-    id: d.id,
-    candidates: d.delegations.totalCount,
-  }})
-
-  const columns = [
-    {Header: 'Delegator', accessor: 'id'},
-    {Header: 'Candidates', accessor: 'candidates'},
-  ]
-
-  return {data: data, columns: columns}
 }

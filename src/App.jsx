@@ -11,6 +11,7 @@ import Events from './pages/Events'
 import Accounts from './pages/Accounts'
 import Candidates from './pages/Candidates'
 import Delegators from './pages/Delegators'
+import Delegations from './pages/Delegations'
 import Block from './pages/Block'
 import Extrinsic from './pages/Extrinsic'
 
@@ -25,7 +26,7 @@ const linkPage = [
 
   {path: '/candidates', component: <Candidates />},
   {path: '/delegators', component: <Delegators />},
-  // {path: '/delegations', component: <Homepage />},
+   {path: '/delegations', component: <Delegations />},
 
   // {path: '/referenda', component: <Homepage />},
   // {path: '/proposals', component: <Homepage />},

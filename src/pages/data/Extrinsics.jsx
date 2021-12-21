@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -13,12 +13,13 @@ export const query = gql`
       nodes {
         id
         block {id, timestamp}
+        success
+        isSigned
         section
         method
       }
     }
   }
-
 `
 
 export const pageQuery = gql`
@@ -32,6 +33,8 @@ export function processExtrinsics(nodes) {
     id: getLink(d.id, 'extrinsic'),
     block: getLink(d.block.id, 'block'),
     date: d.block.timestamp,
+    success: successIcon(d.success),
+    signed: successIcon(d.isSigned),
     section: d.section,
     method: d.method,
   }})
@@ -40,6 +43,8 @@ export function processExtrinsics(nodes) {
     {Header: 'Extrinsic', accessor: 'id'},
     {Header: 'Block', accessor: 'block'},
     {Header: 'Date', accessor: 'date'},
+    {Header: 'Success', accessor: 'success'},
+    {Header: 'Signed', accessor: 'signed'},
     {Header: 'Section', accessor: 'section'},
     {Header: 'Method', accessor: 'method'},
   ]

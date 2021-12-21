@@ -286,7 +286,7 @@ const NAV_ITEMS = [
       },
       {
         label: 'Delegations',
-        href: '#',
+        href: '/delegations',
       }
     ],
   },
