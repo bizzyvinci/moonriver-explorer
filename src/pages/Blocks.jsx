@@ -21,7 +21,7 @@ export default function Blocks() {
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.blocks.totalCount
-        ? Math.floor(pageRes.blocks.totalCount / variables.limit)
+        ? Math.floor((pageRes.blocks.totalCount-1) / variables.limit)
         : 0))
       //console.log(totalPage)
       const blockParams = processBlocks(res.blocks.nodes)

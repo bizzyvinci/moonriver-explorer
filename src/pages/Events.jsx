@@ -1,10 +1,10 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { Heading } from '@chakra-ui/react'
 import { request } from 'graphql-request'
 import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
 import { query, pageQuery, variables, processEvents } from './data/Events'
-import { Heading } from '@chakra-ui/react';
 
 
 export default function Blocks() {
@@ -15,11 +15,12 @@ export default function Blocks() {
 
   useEffect(() => {
     async function getData() {
+      variables.offset = currentPage * variables.limit
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.events.totalCount
-        ? Math.floor(pageRes.events.totalCount / variables.limit)
+        ? Math.floor((pageRes.events.totalCount-1) / variables.limit)
         : 0))
       const eventParams = processEvents(res.events.nodes)
       return eventParams

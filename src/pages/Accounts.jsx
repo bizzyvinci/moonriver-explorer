@@ -15,11 +15,12 @@ export default function Blocks() {
 
   useEffect(() => {
     async function getData() {
+      variables.offset = currentPage * variables.limit
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.accounts.totalCount
-        ? Math.floor(pageRes.accounts.totalCount / variables.limit)
+        ? Math.floor((pageRes.accounts.totalCount-1) / variables.limit)
         : 0))
       const accountParams = processAccounts(res.accounts.nodes)
       return accountParams

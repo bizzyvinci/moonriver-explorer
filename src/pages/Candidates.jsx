@@ -15,11 +15,12 @@ export default function Blocks() {
 
   useEffect(() => {
     async function getData() {
+      variables.offset = currentPage * variables.limit
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.candidates.totalCount
-        ? Math.floor(pageRes.candidates.totalCount / variables.limit)
+        ? Math.floor((pageRes.candidates.totalCount-1) / variables.limit)
         : 0))
       const candidateParams = processCandidates(res.candidates.nodes)
       return candidateParams

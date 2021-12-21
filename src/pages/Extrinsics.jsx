@@ -15,11 +15,12 @@ export default function Blocks() {
 
   useEffect(() => {
     async function getData() {
+      variables.offset = currentPage * variables.limit
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.extrinsics.totalCount
-        ? Math.floor(pageRes.extrinsics.totalCount / variables.limit)
+        ? Math.floor((pageRes.extrinsics.totalCount-1) / variables.limit)
         : 0))
       const extrinsicParams = processExtrinsics(res.extrinsics.nodes)
       return extrinsicParams

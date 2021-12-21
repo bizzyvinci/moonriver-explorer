@@ -1,6 +1,5 @@
-import { PAGE_LIMIT, getLink, successIcon } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon, reduceValue } from '../../utils'
 import { gql } from 'graphql-request'
-import bigInt from 'big-integer'
 
 export const variables = {
   limit: PAGE_LIMIT,
@@ -30,7 +29,7 @@ export function processDelegations(nodes) {
   const data = nodes.map(d => ({
     delegator: getLink(d.delegatorId, 'account'),
     candidate: getLink(d.candidateId, 'account'),
-    value: bigInt(d.value) / bigInt(10**18),
+    value: reduceValue(d.value),
   }))
 
   const columns = [

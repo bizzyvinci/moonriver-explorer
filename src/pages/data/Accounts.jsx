@@ -1,6 +1,5 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue } from '../../utils'
 import { gql } from 'graphql-request'
-import bigInt from 'big-integer'
 
 export const variables = {
   limit: PAGE_LIMIT,
@@ -29,9 +28,9 @@ export const pageQuery = gql`
 export function processAccounts(nodes) {
   const data = nodes.map(d => {return {
     id: getLink(d.id, 'account'),
-    freeBalance: bigInt(d.freeBalance) / bigInt(10**18),
-    reservedBalance: bigInt(d.reservedBalance) / bigInt(10**18),
-    totalBalance: bigInt(d.totalBalance) / bigInt(10**18)
+    freeBalance: reduceValue(d.freeBalance),
+    reservedBalance: reduceValue(d.reservedBalance),
+    totalBalance: reduceValue(d.totalBalance)
   }})
 
   const columns = [

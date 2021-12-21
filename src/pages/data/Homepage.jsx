@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { getLink, successIcon, reduceValue } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -111,17 +111,21 @@ export function processTransactions(nodes) {
 
 export function processCandidates(nodes) {
   const data = nodes.map(d => {return {
-    id: getLink(d.id, 'candidate'),
-    joined: getLink(d.joinedExtrinsic, 'extrinsic'),
-    selfBonded: d.selfBonded,
-    delegator: d.delegations.totalCount
+    id: getLink(d.id, 'account'),
+    isChosen: successIcon(d.isChosen),
+    selfBonded: reduceValue(d.selfBonded),
+    delegators: d.delegations.totalCount,
+    joined: d.joinedExtrinsicId
+      ? getLink(d.joinedExtrinsicId, 'extrinsic')
+      : 'Genesis',
   }})
 
   const columns = [
     {Header: 'Candidate', accessor: 'id'},
-    {Header: 'Joined', accessor: 'joined'},
+    {Header: 'Chosen', accessor: 'isChosen'},
     {Header: 'Self Bonded', accessor: 'selfBonded'},
-    {Header: 'Delegator', accessor: 'delegator'}
+    {Header: 'Delegators', accessor: 'delegators'},
+    {Header: 'Joined', accessor: 'joined'},
   ]
 
   return {data: data, columns: columns}

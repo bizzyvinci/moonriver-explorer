@@ -1,6 +1,5 @@
-import { PAGE_LIMIT, getLink, successIcon } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon, reduceValue } from '../../utils'
 import { gql } from 'graphql-request'
-import bigInt from 'big-integer'
 
 export const variables = {
   limit: PAGE_LIMIT,
@@ -32,7 +31,7 @@ export function processCandidates(nodes) {
   const data = nodes.map(d => ({
     id: getLink(d.id, 'account'),
     isChosen: successIcon(d.isChosen),
-    selfBonded: bigInt(d.selfBonded) / bigInt(10**18),
+    selfBonded: reduceValue(d.selfBonded),
     delegators: d.delegations.totalCount,
     joined: d.joinedExtrinsicId
       ? getLink(d.joinedExtrinsicId, 'extrinsic')

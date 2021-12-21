@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@types/react-table": "^7.7.9",
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "webpack": "5.40.0"
   }
 }

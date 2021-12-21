@@ -15,11 +15,12 @@ export default function Blocks() {
 
   useEffect(() => {
     async function getData() {
+      variables.offset = currentPage * variables.limit
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
       setTotalPage((pageRes.delegators.totalCount
-        ? Math.floor(pageRes.delegators.totalCount / variables.limit)
+        ? Math.floor((pageRes.delegators.totalCount-1) / variables.limit)
         : 0))
       const delegatorParams = processDelegators(res.delegators.nodes)
       return delegatorParams

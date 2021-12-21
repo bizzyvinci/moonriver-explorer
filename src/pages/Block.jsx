@@ -1,92 +1,120 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Heading, Link } from '@chakra-ui/react'
-import { request, gql } from 'graphql-request'
-import { Config } from '../utils'
+import { Heading } from '@chakra-ui/react'
+import { request } from 'graphql-request'
+import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
 import Tabs from '../components/Tabs'
 import Overview from '../components/Overview'
-
-
-const query = gql`
-  query($id: String!) {
-    block(id: $id) {
-      id
-      hash
-      parentHash
-      specVersion
-      stateRoot
-      size
-      timestamp
-      extrinsics(orderBy: INDEX_ASC) {
-        nodes {
-          id
-          section
-          method
-        }
-      }
-      transactions {
-        nodes {
-          id
-          fromId
-          toId
-          value
-        }
-      }
-      events(orderBy: INDEX_ASC) {
-        nodes {
-          id
-          extrinsicId
-          section
-          method
-          docs
-          data
-        }
-      }
-    }
-  }
-
-`
+import { blockQuery, extrinsicQuery, transactionQuery, eventQuery,
+  variables, processBlock, processExtrinsics, processTransactions, processEvents
+} from './data/Block'
 
 
 export default function Block() {
-  const defaultParams = {data: [], columns: []}
   const { id } = useParams();
+  variables.id = id
+  variables.filter = {blockId: {equalTo: id}}
+  
+  const defaultParams = {data: [], columns: []}
   const [overview, setOverview] = useState({data: []})
+
+  const [extrinsicCurrentPage, setExtrinsicCurrentPage] = useState(0)
+  const [extrinsicTotalPage, setExtrinsicTotalPage] = useState(-1)
   const [extrinsics, setExtrinsics] = useState(defaultParams)
+
+  const [transactionCurrentPage, setTransactionCurrentPage] = useState(0)
+  const [transactionTotalPage, setTransactionTotalPage] = useState(-1)
   const [transactions, setTransactions] = useState(defaultParams)
+
+  const [eventCurrentPage, setEventCurrentPage] = useState(0)
+  const [eventTotalPage, setEventTotalPage] = useState(-1)
   const [events, setEvents] = useState(defaultParams)
 
+  // get overview
   useEffect(() => {
     async function getData() {
-      const variables = {id: id}
-      const res = await request(Config.endpoint, query, variables)
+      const res = await request(ENDPOINT, blockQuery, variables)
       console.log(res)
-      const params = processBlock(res.block)
-      console.log(params)
+      const [params, counts] = processBlock(res.block)
+      if (counts.extrinsic > 0) {
+        setExtrinsicTotalPage(Math.floor((counts.extrinsic-1) / variables.limit))
+      }
+      if (counts.transactions > 0) {
+        setTransactionTotalPage(Math.floor((counts.transactions-1) / variables.limit))
+      }
+      if (counts.events > 0) {
+        setEventTotalPage(Math.floor((counts.events-1) / variables.limit))
+      }
+      //console.log(params)
       return params
     }
     getData().then(params => {
-      setOverview(params.overview)
-      setExtrinsics(params.extrinsics)
-      setTransactions(params.transactions)
-      setEvents(params.events)
+      setOverview(params)
     })
   }, [])
+
+  // get extrinsics (if there are)
+  useEffect(() => {
+    async function getData() {
+      variables.extrinsicOffset = extrinsicCurrentPage * variables.limit
+      const res = await request(ENDPOINT, extrinsicQuery, variables)
+      console.log(res)
+      const params = processExtrinsics(res.extrinsics.nodes)
+      return params
+    }
+    getData().then(params => {
+      setExtrinsics(params)
+    })
+  }, [extrinsicTotalPage, extrinsicCurrentPage])
+
+  // get transactions (if there are)
+  useEffect(() => {
+    async function getData() {
+      variables.transactionOffset = transactionCurrentPage * variables.limit
+      const res = await request(ENDPOINT, transactionQuery, variables)
+      console.log(res)
+      const params = processTransactions(res.transactions.nodes)
+      return params
+    }
+    getData().then(params => {
+      setTransactions(params)
+    })
+  }, [transactionTotalPage, transactionCurrentPage])
+
+  // get events (if there are)
+  useEffect(() => {
+    async function getData() {
+      variables.eventOffset = eventCurrentPage * variables.limit
+      const res = await request(ENDPOINT, eventQuery, variables)
+      console.log(res)
+      const params = processEvents(res.events.nodes)
+      return params
+    }
+    getData().then(params => {
+      setEvents(params)
+    })
+  }, [eventTotalPage, eventCurrentPage])
 
   const tabData = [
     {
       label: 'Extrinsics', 
-      content: extrinsics.data?.length > 0 && <Table {...extrinsics} />
+      content: extrinsicTotalPage >= 0 && <Table 
+          currentPage={extrinsicCurrentPage} totalPage={extrinsicTotalPage} 
+          goToPage={setExtrinsicCurrentPage} {...extrinsics} />
     },
     {
       label: 'Transactions',
-      content: transactions.data?.length > 0 && <Table {...transactions} />
+      content: transactionTotalPage >= 0 && <Table
+          currentPage={transactionCurrentPage} totalPage={transactionTotalPage}
+          goToPage={setTransactionCurrentPage} {...transactions} />
     },
     {
       label: 'Events',
-      content: events.data?.length > 0 && <Table {...events} />
+      content: eventTotalPage >= 0 && <Table
+          currentPage={eventCurrentPage} totalPage={eventTotalPage} 
+          goToPage={setEventCurrentPage} {...events} />
     },
   ]
 
@@ -98,70 +126,4 @@ export default function Block() {
       <Tabs data={tabData} />
     </>
   )
-}
-
-
-function processBlock(block) {
-  const overviewData = [
-    {label: 'Number', value: block.id},
-    {label: 'Timestamp', value: block.timestamp},
-    {label: 'Hash', value: block.hash},
-    {label: 'Parent Hash', value: block.parentHash},
-    {label: 'State Root', value: block.stateRoot},
-    {label: 'Spec Version', value: block.specVersion},
-    {label: 'Size', value: block.size},
-    {label: 'Extrinsics', value: block.extrinsics?.nodes.length},
-    {label: 'Transactions', value: block.transactions?.nodes.length},
-    {label: 'Events', value: block.events?.nodes.length}
-  ]
-  const overviewParams = {data: overviewData}
-
-  const extrinsicData = block.extrinsics?.nodes.map(d => {return {
-    id: <Link href={'/extrinsic/'+d.id} color='blue.600'> {d.id} </Link>,
-    section: d.section,
-    method: d.method,
-  }})
-  const extrinsicColumns = [
-    {Header: 'Extrinsic', accessor: 'id'},
-    {Header: 'Section', accessor: 'section'},
-    {Header: 'Method', accessor: 'method'},
-  ]
-  const extrinsicParams = {data: extrinsicData, columns: extrinsicColumns}
-
-  const transactionData = block.transactions?.nodes.map(d => {return {
-    id: <Link href={'/transaction/'+d.id} color='blue.600'> {d.id} </Link>,
-    from: d.fromId,
-    to: d.toId,
-    value: d.value,
-  }})
-  const transactionColumns = [
-    {Header: 'Transaction', accessor: 'id'},
-    {Header: 'From', accessor: 'from'},
-    {Header: 'To', accessor: 'to'},
-    {Header: 'Value', accessor: 'value'},
-  ]
-  const transactionParams = {data: transactionData, columns: transactionColumns}
-
-  const eventData = block.events?.nodes.map(d => {return {
-    id: d.id,
-    extrinsic: <Link href={'/extrinsic/'+d.extrinsicId} color='blue.600'> {d.extrinsicId} </Link>,
-    section: d.section,
-    method: d.method,
-    docs: d.docs,
-    data: d.data
-  }})
-  const eventColumns = [
-    {Header: 'Event', accessor: 'id'},
-    {Header: 'Extrinsic', accessor: 'extrinsic'},
-    {Header: 'Section', accessor: 'section'},
-    {Header: 'Method', accessor: 'method'},
-  ]
-  const eventParams = {data: eventData, columns: eventColumns}
-
-  return {
-    overview: overviewParams, 
-    extrinsics: extrinsicParams, 
-    transactions: transactionParams,
-    events: eventParams
-  }
 }
