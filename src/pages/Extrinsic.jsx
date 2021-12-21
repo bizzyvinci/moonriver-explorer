@@ -1,115 +1,68 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Heading, Link } from '@chakra-ui/react'
-import { CheckCircleIcon, CloseIcon } from '@chakra-ui/icons'
+import { Heading } from '@chakra-ui/react'
 import { request, gql } from 'graphql-request'
-import { Config } from '../utils'
+import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
-import Tabs from '../components/Tabs'
 import Overview from '../components/Overview'
+import { extrinsicQuery, eventQuery, variables, 
+  processExtrinsic, processEvents } from './data/Extrinsic'
 
 
-const query = gql`
-  query($id: String!) {
-    extrinsic(id: $id) {
-      id
-      hash
-      transaction {id}
-      block {id, timestamp}
-      signerId
-      section
-      method
-      success
-    }
-    events(filter: {extrinsicId: {equalTo: $id}}) {
-      nodes {
-        id
-        section
-        method
-        docs
-        data
-      }
-    }
-  }
-
-`
-
-
-export default function Block() {
-  const defaultParams = {data: [], columns: []}
+export default function Extrinsic() {
   const { id } = useParams();
+  variables.id = id
+  variables.filter = {extrinsicId: {equalTo: id}}
+  
+  const defaultParams = {data: [], columns: []}
   const [overview, setOverview] = useState({data: []})
+  const [eventCurrentPage, setEventCurrentPage] = useState(0)
+  const [eventTotalPage, setEventTotalPage] = useState(-1)
   const [events, setEvents] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
-      const variables = {id: id}
-      const res = await request(Config.endpoint, query, variables)
+      const res = await request(ENDPOINT, extrinsicQuery, variables)
       console.log(res)
-      const params = processParams(res)
+      if (res.events.totalCount > 0) {
+        setEventTotalPage(Math.floor((res.events.totalCount - 1) / variables.limit))
+      }
+      const params = processExtrinsic(res.extrinsic, res.events.totalCount)
       console.log(params)
       return params
     }
     getData().then(params => {
-      setOverview(params.overview)
-      setEvents(params.events)
+      setOverview(params)
     })
   }, [])
+
+  // get events (if there are)
+  useEffect(() => {
+    async function getData() {
+      variables.eventOffset = eventCurrentPage * variables.limit
+      const res = await request(ENDPOINT, eventQuery, variables)
+      console.log(res)
+      const params = processEvents(res.events.nodes)
+      return params
+    }
+    getData().then(params => {
+      setEvents(params)
+    })
+  }, [eventTotalPage, eventCurrentPage])
 
   return (
     <>
       <Heading>Extrinsic #{id}</Heading>
       <Overview {...overview} />
       <br /><br />
-      <Heading size='sm'>Events</Heading>
-      <Table {...events} />
+      { eventTotalPage >= 0 &&
+        <>
+          <Heading size='sm'>Events</Heading>
+          <Table {...events} />
+        </>
+      }
     </>
   )
 }
 
-
-function processParams(res) {
-  const extrinsic = res.extrinsic
-  const overviewData = [
-    {label: 'Id', value: extrinsic.id},
-    {label: 'Hash', value: extrinsic.hash},
-    {label: 'Transaction', value: extrinsic.transaction?.id
-      ? <Link href={'/transaction/'+extrinsic.transaction.id} color='blue.600'> 
-          {extrinsic.transaction.id} </Link>
-      : null},
-    {label: 'Block', 
-     value: <Link href={'/block/'+extrinsic.block.id} color='blue.600'> 
-              {extrinsic.block.id} </Link>},
-    {label: 'Timestamp', value: extrinsic.block.timestamp},
-    {label: 'Signer', value: extrinsic.signerId
-      ? <Link href={'/account/'+extrinsic.signerId} color='blue.600'> 
-          {extrinsic.signerId} </Link>
-      : null},
-    {label: 'Success', value: extrinsic.success 
-      ? <CheckCircleIcon color='green' />
-      : <CloseIcon color='red' />,},
-    {label: 'Section', value: extrinsic.section},
-    {label: 'Method', value: extrinsic.method}
-  ]
-  const overviewParams = {data: overviewData}
-
-  const eventData = res.events?.nodes.map(d => {return {
-    id: d.id,
-    section: d.section,
-    method: d.method,
-    //docs: d.docs,
-    //data: d.data
-  }})
-  const eventColumns = [
-    {Header: 'Event', accessor: 'id'},
-    {Header: 'Section', accessor: 'section'},
-    {Header: 'Method', accessor: 'method'},
-  ]
-  const eventParams = {data: eventData, columns: eventColumns}
-
-  return {
-    overview: overviewParams,
-    events: eventParams
-  }
-}
