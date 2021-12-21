@@ -82,7 +82,7 @@ export function processBlock(block) {
   ]
   const overviewParams = {data: overviewData}
   const counts = {
-    extrinsic: block.extrinsics.totalCount,
+    extrinsics: block.extrinsics.totalCount,
     transactions: block.transactions.totalCount,
     events: block.events.totalCount
   }

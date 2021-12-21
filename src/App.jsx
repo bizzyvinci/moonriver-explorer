@@ -14,6 +14,9 @@ import Delegators from './pages/Delegators'
 import Delegations from './pages/Delegations'
 import Block from './pages/Block'
 import Extrinsic from './pages/Extrinsic'
+import Account from './pages/Account'
+import Token from './pages/Token'
+import Stake from './pages/Stake'
 
 
 const linkPage = [
@@ -37,12 +40,11 @@ const linkPage = [
 
   {path: '/block/:id', children: <Block />},
   {path: '/extrinsic/:id', children: <Extrinsic />},
-  {path: '/transaction/:id', children: <Homepage />},
-  {path: '/account/:id', children: <Homepage />},
-
-  {path: '/token/:id', children: <Homepage />},
-  {path: '/candidate/:id', children: <Homepage />},
-  {path: '/delegator/:id', children: <Homepage />},
+  // {path: '/transaction/:id', children: <Homepage />},
+  
+  {path: '/account/:id', children: <Account />},
+  {path: '/token/:id', children: <Token />},
+  {path: '/stake/:id', children: <Stake />}
 ]
 
 function App() {

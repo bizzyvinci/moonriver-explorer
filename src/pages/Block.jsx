@@ -38,8 +38,8 @@ export default function Block() {
       const res = await request(ENDPOINT, blockQuery, variables)
       console.log(res)
       const [params, counts] = processBlock(res.block)
-      if (counts.extrinsic > 0) {
-        setExtrinsicTotalPage(Math.floor((counts.extrinsic-1) / variables.limit))
+      if (counts.extrinsics > 0) {
+        setExtrinsicTotalPage(Math.floor((counts.extrinsics-1) / variables.limit))
       }
       if (counts.transactions > 0) {
         setTransactionTotalPage(Math.floor((counts.transactions-1) / variables.limit))

@@ -26,5 +26,9 @@ export const successIcon = (success) => (
 )
 
 export const reduceValue = (value, by=BIGINT_DECIMAL) => {
-  return value / by
+  if (value) {
+    return value / by
+  } else {
+    return value
+  }
 }
