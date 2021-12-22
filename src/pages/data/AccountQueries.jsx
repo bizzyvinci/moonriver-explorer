@@ -67,7 +67,7 @@ export const extrinsicQuery = gql`
 
 export const transactionQuery = gql`
   query($id: String!, $limit: Int, $transactionOffset: Int) {
-    transactions(first: $limit, offset: $transactionOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC]) {
+    transactions(first: $limit, offset: $transactionOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, ID_ASC]) {
       nodes {
         id
         block {id, timestamp}
@@ -97,7 +97,7 @@ export const transferQuery = gql`
 
 export const erc20TransferQuery = gql`
   query($id: String!, $limit: Int, $erc20TransferOffset: Int) {
-    erc20Transfers(first: $limit, offset: $erc20TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+    erc20Transfers(first: $limit, offset: $erc20TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId
@@ -115,7 +115,7 @@ export const erc20TransferQuery = gql`
 
 export const erc721TransferQuery = gql`
   query($id: String!, $limit: Int, $erc721TransferOffset: Int) {
-    erc721Transfers(first: $limit, offset: $erc721TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+    erc721Transfers(first: $limit, offset: $erc721TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId

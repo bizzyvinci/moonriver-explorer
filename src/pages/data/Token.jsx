@@ -38,7 +38,7 @@ export const tokenQuery = gql`
 
 export const transferQuery = gql`
   query($id: String!, $limit: Int, transferOffset: Int) {
-    erc20Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc20Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId
@@ -51,7 +51,7 @@ export const transferQuery = gql`
         }
       }
     }
-    erc721Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc721Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId
@@ -69,14 +69,14 @@ export const transferQuery = gql`
 
 export const balanceQuery = gql`
   query($id: String!, $limit: Int, balanceOffset: Int) {
-    erc20Transfers(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc20Balances(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [VALUE_DESC]) {
       nodes {
         accountId
         tokenId
         value
       }
     }
-    erc721Transfers(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc721Balances(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [VALUE_ASC]) {
       nodes {
         accountId
         tokenId
