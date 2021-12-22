@@ -29,7 +29,7 @@ const linkPage = [
 
   {path: '/candidates', component: <Candidates />},
   {path: '/delegators', component: <Delegators />},
-   {path: '/delegations', component: <Delegations />},
+  {path: '/delegations', component: <Delegations />},
 
   // {path: '/referenda', component: <Homepage />},
   // {path: '/proposals', component: <Homepage />},

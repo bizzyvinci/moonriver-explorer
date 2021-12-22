@@ -17,8 +17,8 @@ export const countQuery = gql`
     transactions(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
 
     transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
-    eRC20Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
-    eRC721Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
+    erc20Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
+    erc721Transfers(filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {totalCount}
   }
 `
 
@@ -33,21 +33,21 @@ export const accountQuery = gql`
       creatorId
       createdAt
     }
-    eRC20Balances(filter: {accountId: {equalTo: $id}}) {
+    erc20Balances(filter: {accountId: {equalTo: $id}}) {
       nodes {
         tokenId
         value
       }
     }
-    eRC721Balances(filter: {accountId: {equalTo: $id}}) {
+    erc721Balances(filter: {accountId: {equalTo: $id}}) {
       nodes {
         tokenId
         value
       }
     }
     rewards(filter: {accountId: {equalTo: $id}}) {totalCount}
-    eRC20Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
-    eRC721Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc20Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc721Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
   }
 `
 
@@ -97,7 +97,7 @@ export const transferQuery = gql`
 
 export const erc20TransferQuery = gql`
   query($id: String!, $limit: Int, $erc20TransferOffset: Int) {
-    eRC20Transfers(first: $limit, offset: $erc20TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+    erc20Transfers(first: $limit, offset: $erc20TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
       nodes {
         id
         fromId
@@ -115,7 +115,7 @@ export const erc20TransferQuery = gql`
 
 export const erc721TransferQuery = gql`
   query($id: String!, $limit: Int, $erc721TransferOffset: Int) {
-    eRC721Transfers(first: $limit, offset: $erc721TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
+    erc721Transfers(first: $limit, offset: $erc721TransferOffset, filter: {fromId: {equalTo: $id}, toId: {equalTo: $id}}) {
       nodes {
         id
         fromId

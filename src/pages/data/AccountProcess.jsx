@@ -5,16 +5,16 @@ export function processCounts(res) {
     extrinsics: res.extrinsics.totalCount,
     transactions: res.transactions.totalCount,
     transfers: res.transfers.totalCount,
-    erc20Transfers: res.eRC20Transfers.totalCount,
-    erc721Transfers: res.eRC721Transfers.totalCount,
+    erc20Transfers: res.erc20Transfers.totalCount,
+    erc721Transfers: res.erc721Transfers.totalCount,
   }
   return counts
 }
 
 export function processAccount(res) {
-  const { account, eRC20Balances, eRC721Balances, rewards, eRC20Transfers, eRC721Transfers } = res
+  const { account, erc20Balances, erc721Balances, rewards, erc20Transfers, erc721Transfers } = res
 
-  // Process eRC20Balances and eRC721Balances as dropdown menu for Tokens
+  // Process erc20Balances and erc721Balances as dropdown menu for Tokens
 
   const overviewData = [
     {
@@ -51,7 +51,7 @@ export function processAccount(res) {
     },
     {
       label: 'Token Page',
-      value: (eRC20Transfers.totalCount > 0 || eRC721Transfers.totalCount > 0) && getLink(account.id, 'token')
+      value: (erc20Transfers.totalCount > 0 || erc721Transfers.totalCount > 0) && getLink(account.id, 'token')
     },
     {
       label: 'Stake Page',
