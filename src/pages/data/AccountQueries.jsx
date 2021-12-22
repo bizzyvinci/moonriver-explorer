@@ -104,10 +104,9 @@ export const erc20TransferQuery = gql`
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
   }
@@ -122,10 +121,9 @@ export const erc721TransferQuery = gql`
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
   }

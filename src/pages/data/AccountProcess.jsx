@@ -129,8 +129,8 @@ export function processTransfers(nodes) {
 
 export function processErc20Transfers(nodes) {
   const erc20TransferData = nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
@@ -150,8 +150,8 @@ export function processErc20Transfers(nodes) {
 
 export function processErc721Transfers(nodes) {
   const erc721TransferData = nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,

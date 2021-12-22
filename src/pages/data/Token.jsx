@@ -45,10 +45,9 @@ export const transferQuery = gql`
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
     erc721Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
@@ -58,10 +57,9 @@ export const transferQuery = gql`
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
   }
@@ -127,8 +125,8 @@ export function processToken(res) {
 
 export function processTransfers(res) {
   const erc20TransferData = res.erc20Transfers.nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
@@ -145,8 +143,8 @@ export function processTransfers(res) {
   const erc20TransferParams = {data: erc20TransferData, columns: erc20TransferColumns}
   
   const erc721TransferData = res.erc721Transfers.nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
