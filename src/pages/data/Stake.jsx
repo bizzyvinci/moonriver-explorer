@@ -25,9 +25,17 @@ export const stakeQuery = gql`
     candidate(id: $id) {
       id
       selfBonded
+      delegations(first: 100) {
+        totalCount
+        nodes {value}
+      }
     }
     delegator(id: $id) {
       id
+      delegations(first: 100) {
+        totalCount
+        nodes {value}
+      }
     }
   }
 `
@@ -79,9 +87,33 @@ export function processCounts(res) {
 }
 
 export function processStake(res) {
+  const { candidate, delegator } = res
   const overviewData = [
-    {label: 'Account', value: getLink((res.candidate?.id || res.delegator?.id), 'account')},
-    {label: 'Self Bonded', value: reduceValue(res.candidate?.selfBonded)},
+    {label: 'Account', value: getLink((candidate?.id || res.delegator?.id), 'account')},
+    // as a candidate
+    {label: 'Self Bonded', value: reduceValue(candidate?.selfBonded)},
+    {
+      label: 'Total Bonded',
+      value: reduceValue(candidate?.selfBonded)
+        + sum(candidate?.delegations.nodes.map(x => reduceValue(x.value)))
+    },
+    {
+      label: 'Delegators',
+      value: candidate?.delegations.totalCount > 100
+        ? '100+'
+        : String(candidate?.delegations.totalCount)
+    },
+    // as a delegator
+    {
+      label: 'Delegated', 
+      value: sum(delegator?.delegations.nodes.map(x => reduceValue(x.value)))
+    },
+    {
+      label: 'Candidates',
+      value: delegator?.delegations.totalCount > 100
+        ? '100+'
+        : String(delegator?.delegations.totalCount)
+    },
   ]
   const overviewParams = {data: overviewData}
   return overviewParams

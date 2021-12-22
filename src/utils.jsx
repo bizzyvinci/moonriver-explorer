@@ -24,8 +24,16 @@ export const successIcon = (success) => (
 
 export const reduceValue = (value, by=BIGINT_DECIMAL) => {
   if (value) {
-    return value / by
+    return Number(value / by)
   } else {
-    return value
+    return Number(value)
+  }
+}
+
+export const sum = (arr) => {
+  if (arr){
+    return arr.reduce((a,b) => a+b, 0)
+  } else {
+    return 0
   }
 }

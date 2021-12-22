@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, sum } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -12,7 +12,10 @@ export const query = gql`
     delegators(first: $limit, orderBy: $orderBy) {
       nodes {
         id
-        delegations {totalCount}
+        delegations(first:100) {
+          totalCount
+          nodes {value}
+        }
       }
     }
   }
@@ -27,11 +30,15 @@ export const pageQuery = gql`
 export function processDelegators(nodes) {
   const data = nodes.map(d => {return {
     id: getLink(d.id, 'account'),
-    candidates: d.delegations.totalCount,
+    bonded: sum(d.delegations.nodes.map(x => reduceValue(x.value))),
+    candidates: d.delegations.totalCount > 100
+      ? '100+'
+      : String(d.delegations.totalCount),
   }})
 
   const columns = [
     {Header: 'Delegator', accessor: 'id'},
+    {Header: 'Bonded', accessor: 'bonded'},
     {Header: 'Candidates', accessor: 'candidates'},
   ]
 

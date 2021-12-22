@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink, successIcon, reduceValue } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon, reduceValue, sum } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -15,7 +15,10 @@ export const query = gql`
         isChosen
         selfBonded
         joinedExtrinsicId
-        delegations {totalCount}
+        delegations(first:100) {
+          totalCount
+          nodes {value}
+        }
       }
     }
   }
@@ -32,7 +35,11 @@ export function processCandidates(nodes) {
     id: getLink(d.id, 'account'),
     isChosen: successIcon(d.isChosen),
     selfBonded: reduceValue(d.selfBonded),
-    delegators: d.delegations.totalCount,
+    totalBonded: reduceValue(d.selfBonded) 
+      + sum(d.delegations.nodes.map(x => reduceValue(x.value))),
+    delegators: d.delegations.totalCount > 100
+      ? '100+'
+      : String(d.delegations.totalCount),
     joined: d.joinedExtrinsicId
       ? getLink(d.joinedExtrinsicId, 'extrinsic')
       : 'Genesis',
@@ -42,6 +49,7 @@ export function processCandidates(nodes) {
     {Header: 'Candidate', accessor: 'id'},
     {Header: 'Chosen', accessor: 'isChosen'},
     {Header: 'Self Bonded', accessor: 'selfBonded'},
+    {Header: 'Total Bonded', accessor: 'totalBonded'},
     {Header: 'Delegators', accessor: 'delegators'},
     {Header: 'Joined', accessor: 'joined'},
   ]
