@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink, reduceValue } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue, sum } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
