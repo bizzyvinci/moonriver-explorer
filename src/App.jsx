@@ -3,6 +3,9 @@ import { Box } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Warning from './components/Warning'
+import Footer from './components/Footer'
+import Error from './pages/Error'
+
 import Homepage from './pages/Homepage'
 import Blocks from './pages/Blocks'
 import Extrinsics from './pages/Extrinsics'
@@ -53,7 +56,9 @@ const linkPage = [
   
   {path: '/account/:id', children: <Account />},
   {path: '/token/:id', children: <Token />},
-  {path: '/stake/:id', children: <Stake />}
+  {path: '/stake/:id', children: <Stake />},
+
+  {path: '/error', component: <Error />}
 ]
 
 function App() {
@@ -80,6 +85,8 @@ function App() {
             }
           })}
         </Switch>
+        <br />
+        <Footer />
       </Router>
     </Box>
   );
