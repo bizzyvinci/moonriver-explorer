@@ -17,7 +17,9 @@ export default function Footer() {
 
   return (
     <Flex justify='space-around'>
-      <Link href='https://github.com/bizzyvinci/moonriver-explorer'>
+      <Link href='https://github.com/bizzyvinci/moonriver-explorer'
+        target='_blank' rel="noopener noreferrer"
+      >
         <Image src={githubLogo} alt='github logo' h='50px' />
       </Link>
       {colorMode === 'light' 
