@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Image,
   Input,
   Stack,
@@ -14,24 +13,37 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
-  useDisclosure,
-  useColorMode
+  useDisclosure
 } from '@chakra-ui/react';
 import {
   HamburgerIcon,
   CloseIcon,
   ChevronDownIcon,
-  ChevronRightIcon,
-  MoonIcon,
-  SunIcon
+  ChevronRightIcon
 } from '@chakra-ui/icons';
+import { useHistory } from 'react-router-dom'
 import brandLogo from '../assets/moonriver-logo.svg'
+import { getUrl } from '../search'
 
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
-  const { colorMode, toggleColorMode} = useColorMode()
+  let searchTerm = ''
+  let history = useHistory()
+
+  function handleSearch(e) {
+    //console.log(e)
+    if (e.key === 'Enter') {
+      console.log(searchTerm)
+      e.target.value = ''
+      getUrl(searchTerm).then(url => {
+        url ? history.push(url) : history.push('/error')
+      })
+      searchTerm = ''
+    } else {
+      searchTerm += e.key
+    }
+  }
 
   return (
     <Box>
@@ -49,7 +61,7 @@ export default function Navbar() {
         justify='space-between'>
         <Flex direction='row' w='-webkit-fill-available'>
           <Flex flex={{ base: 1 }}>
-            <Link href='#'>
+            <Link href='/'>
               <Image src={brandLogo} alt='brand logo' h={{base: '30px', md:'20px', sm:'30px'}} />
             </Link>
             <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -74,13 +86,10 @@ export default function Navbar() {
 
         <Flex w='-webkit-fill-available'
           maxWidth='400px'>
-          <Input placeholder='Search by address, block, transaction, extrinsic' />
-          {colorMode === 'light' 
-            ? <IconButton aria-label='Switch to dark mode'
-                icon={<MoonIcon />} onClick={toggleColorMode} />
-            : <IconButton aria-label='Switch to light mode/>' 
-                icon={<SunIcon />} onClick={toggleColorMode} />
-          }
+          <Input 
+            onKeyPress = {(e) => handleSearch(e)}
+            placeholder='Search by address, block, extrinsic, transaction'
+          />
         </Flex>
       </Flex>
 
@@ -294,8 +303,8 @@ const NAV_ITEMS = [
     label: 'Governance',
     children: [
       {
-        label: 'Referenda',
-        href: '/referenda',
+        label: 'Referendums',
+        href: '/referendums',
       },
       {
         label: 'Proposals',

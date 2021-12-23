@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink, reduceValue } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue, sum } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -25,15 +25,23 @@ export const stakeQuery = gql`
     candidate(id: $id) {
       id
       selfBonded
+      delegations(first: 100) {
+        totalCount
+        nodes {value}
+      }
     }
     delegator(id: $id) {
       id
+      delegations(first: 100) {
+        totalCount
+        nodes {value}
+      }
     }
   }
 `
 
 export const candidateQuery  = gql`
-  query($id: String!, $limit: Int, $candidateOffset) {
+  query($id: String!, $limit: Int, $candidateOffset: Int) {
     delegations(first: $limit, offset: $candidateOffset, filter: {delegatorId: {equalTo: $id}}, orderBy: VALUE_DESC) {
       nodes {
         delegatorId
@@ -45,7 +53,7 @@ export const candidateQuery  = gql`
 `
 
 export const delegatorQuery  = gql`
-  query($id: String!, $limit: Int, $delegatorOffset) {
+  query($id: String!, $limit: Int, $delegatorOffset: Int) {
     delegations(first: $limit, offset: $delegatorOffset, filter: {candidateId: {equalTo: $id}}, orderBy: VALUE_DESC) {
       nodes {
         delegatorId
@@ -57,7 +65,7 @@ export const delegatorQuery  = gql`
 `
 
 export const rewardQuery  = gql`
-  query($id: String!, $limit: Int, $rewardOffset) {
+  query($id: String!, $limit: Int, $rewardOffset: Int) {
     rewards(first: $limit, offset: $rewardOffset, filter: {accountId: {equalTo: $id}}, orderBy: BLOCK_NUMBER_DESC) {
       nodes {
         blockNumber
@@ -71,17 +79,45 @@ export const rewardQuery  = gql`
 
 export function processCounts(res) {
   const counts = {
-    candidates: res.delegator.delegations.totalCount,
-    delegators: res.candidate.delegations.totalCount,
+    candidates: res.delegator 
+      ? res.delegator.delegations.totalCount
+      : 0,
+    delegators: res.candidate
+      ? res.candidate.delegations.totalCount
+      : 0,
     rewards: res.rewards.totalCount,
   }
   return counts
 }
 
 export function processStake(res) {
+  const { candidate, delegator } = res
   const overviewData = [
-    {label: 'Account', value: getLink((res.candidate?.id || res.delegator?.id), 'account')},
-    {label: 'Self Bonded', value: reduceValue(res.candidate?.selfBonded)},
+    {label: 'Account', value: getLink((candidate?.id || res.delegator?.id), 'account')},
+    // as a candidate
+    {label: 'Self Bonded', value: reduceValue(candidate?.selfBonded)},
+    {
+      label: 'Total Bonded',
+      value: reduceValue(candidate?.selfBonded)
+        + sum(candidate?.delegations.nodes.map(x => reduceValue(x.value)))
+    },
+    {
+      label: 'Delegators',
+      value: candidate?.delegations.totalCount > 100
+        ? '100+'
+        : candidate ? String(candidate?.delegations.totalCount) : null
+    },
+    // as a delegator
+    {
+      label: 'Delegated', 
+      value: sum(delegator?.delegations.nodes.map(x => reduceValue(x.value)))
+    },
+    {
+      label: 'Candidates',
+      value: delegator?.delegations.totalCount > 100
+        ? '100+'
+        : delegator ? String(delegator?.delegations.totalCount) : null
+    },
   ]
   const overviewParams = {data: overviewData}
   return overviewParams

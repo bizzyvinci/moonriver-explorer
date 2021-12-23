@@ -9,17 +9,17 @@ export const variables = {
 
 export const countQuery = gql`
   query($id: String!) {
-    eRC20Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
-    eRC721Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc20Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc721Transfers(filter: {tokenId: {equalTo: $id}}) {totalCount}
 
-    eRC20Balances(filter: {tokenId: {equalTo: $id}}) {totalCount}
-    eRC20Balances(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc20Balances(filter: {tokenId: {equalTo: $id}}) {totalCount}
+    erc20Balances(filter: {tokenId: {equalTo: $id}}) {totalCount}
   }
 `
 
 export const tokenQuery = gql`
   query($id: String!) {
-    eRC20Token(id: $id) {
+    erc20Token(id: $id) {
       id
       name
       symbol
@@ -27,7 +27,7 @@ export const tokenQuery = gql`
       supply
       balances {totalCount}
     }
-    eRC721Token(id: $id) {
+    erc721Token(id: $id) {
       id
       name
       symbol
@@ -38,30 +38,28 @@ export const tokenQuery = gql`
 
 export const transferQuery = gql`
   query($id: String!, $limit: Int, transferOffset: Int) {
-    eRC20Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc20Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
-    eRC721Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc721Transfers(first: $limit, offset: transferOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [BLOCK_NUMBER_DESC, TRANSACTION_INDEX_ASC]) {
       nodes {
         id
         fromId
         toId
         tokenId
         value
-        log {
-          transactionId
-          block {id, timestamp}
-        }
+        transactionHash
+        blockNumber
+        timestamp
       }
     }
   }
@@ -69,14 +67,14 @@ export const transferQuery = gql`
 
 export const balanceQuery = gql`
   query($id: String!, $limit: Int, balanceOffset: Int) {
-    eRC20Transfers(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc20Balances(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [VALUE_DESC]) {
       nodes {
         accountId
         tokenId
         value
       }
     }
-    eRC721Transfers(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}) {
+    erc721Balances(first: $limit, offset: balanceOffset, filter: {tokenId: {equalTo: $id}}, orderBy: [VALUE_ASC]) {
       nodes {
         accountId
         tokenId
@@ -88,36 +86,36 @@ export const balanceQuery = gql`
 
 export function processCounts(res) {
   const counts = {
-    erc20Transfers: res.eRC20Transfers.totalCount,
-    erc721Transfers: res.eRC721Transfers.totalCount,
-    erc20Balances: res.eRC20Balances.totalCount,
-    erc721Balances: res.eRC721Balances.totalCount,
+    erc20Transfers: res.erc20Transfers.totalCount,
+    erc721Transfers: res.erc721Transfers.totalCount,
+    erc20Balances: res.erc20Balances.totalCount,
+    erc721Balances: res.erc721Balances.totalCount,
   }
   return counts
 }
 
 export function processToken(res) {
-  const { eRC20Token, eRC721Token } = res
+  const { erc20Token, erc721Token } = res
   let erc20Data = []
   let erc721Data = []
 
-  if (eRC20Token) {
-    const erc20Data = [
-      {label: 'Account', value: getLink(eRC20Token.id)},
-      {label: 'Name', value: eRC20Token.name},
-      {label: 'Symbol', value: eRC20Token.symbol},
-      {label: 'Decimal', value: eRC20Token.decimal},
-      {label: 'Supply', value: eRC20Token.supply},
-      {label: 'Holders', value: eRC20Token.balances.totalCount},
+  if (erc20Token) {
+    erc20Data = [
+      {label: 'Account', value: getLink(erc20Token.id)},
+      {label: 'Name', value: erc20Token.name},
+      {label: 'Symbol', value: erc20Token.symbol},
+      {label: 'Decimal', value: erc20Token.decimal},
+      {label: 'Supply', value: erc20Token.supply},
+      {label: 'Holders', value: erc20Token.balances.totalCount},
     ]
   }
 
-  if (eRC721Token) {
-    const erc721Data = [
-      {label: 'Account', value: getLink(eRC721Token.id)},
-      {label: 'Name', value: eRC721Token.name},
-      {label: 'Symbol', value: eRC721Token.symbol},
-      {label: 'Supply', value: eRC721Token.balances.totalCount},
+  if (erc721Token) {
+    erc721Data = [
+      {label: 'Account', value: getLink(erc721Token.id)},
+      {label: 'Name', value: erc721Token.name},
+      {label: 'Symbol', value: erc721Token.symbol},
+      {label: 'Supply', value: erc721Token.balances.totalCount},
     ]
   }
 
@@ -126,9 +124,9 @@ export function processToken(res) {
 }
 
 export function processTransfers(res) {
-  const erc20TransferData = res.eRC20Transfers.nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+  const erc20TransferData = res.erc20Transfers.nodes.map(d => {return {
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
@@ -144,9 +142,9 @@ export function processTransfers(res) {
   ]
   const erc20TransferParams = {data: erc20TransferData, columns: erc20TransferColumns}
   
-  const erc721TransferData = res.eRC721Transfers.nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+  const erc721TransferData = res.erc721Transfers.nodes.map(d => {return {
+    transaction: getLink(d.transactionHash, 'transaction'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
@@ -167,7 +165,7 @@ export function processTransfers(res) {
 }
 
 export function processBalances(res) {
-  const erc20BalanceData = res.eRC20Balances.nodes.map(d => {return {
+  const erc20BalanceData = res.erc20Balances.nodes.map(d => {return {
     account: getLink(d.accountId, 'account'),
     //token: d.tokenId,
     value: reduceValue(d.value)
@@ -179,7 +177,7 @@ export function processBalances(res) {
   ]
   const erc20BalanceParams = {data: erc20BalanceData, columns: erc20BalanceColumns}
   
-  const erc721BalanceData = res.eRC721Balances.nodes.map(d => {return {
+  const erc721BalanceData = res.erc721Balances.nodes.map(d => {return {
     account: getLink(d.accountId, 'account'),
     //token: d.tokenId,
     value: d.value

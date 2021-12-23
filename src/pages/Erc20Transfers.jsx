@@ -4,14 +4,14 @@ import { Heading } from '@chakra-ui/react'
 import { request } from 'graphql-request'
 import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
-import { query, pageQuery, variables, processEvents } from './data/Events'
+import { query, pageQuery, variables, processTransfers } from './data/Erc20Transfers'
 
 
-export default function Events() {
+export default function Erc20Transfers() {
   const defaultParams = {data: [], columns: []}
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPage, setTotalPage] = useState(0)
-  const [events, setEvents] = useState(defaultParams)
+  const [transfers, setTransfers] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
@@ -19,20 +19,20 @@ export default function Events() {
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
-      setTotalPage((pageRes.events.totalCount
-        ? Math.floor((pageRes.events.totalCount-1) / variables.limit)
+      setTotalPage((pageRes.erc20Transfers.totalCount
+        ? Math.floor((pageRes.erc20Transfers.totalCount-1) / variables.limit)
         : 0))
-      const eventParams = processEvents(res.events.nodes)
-      return eventParams
+      const params = processTransfers(res.erc20Transfers.nodes)
+      return params
     }
-    getData().then(eventParams => setEvents(eventParams))
+    getData().then(params => setTransfers(params))
   }, [currentPage])
 
   return (
     <>
-      <Heading>Events</Heading>
+      <Heading>ERC20 Transfers</Heading>
       <br />
-      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...events} />
+      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...transfers} />
     </>
   )
 }

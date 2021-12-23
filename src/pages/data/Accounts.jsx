@@ -14,6 +14,7 @@ export const query = gql`
         id
         freeBalance
         reservedBalance
+        totalBalance
       }
     }
   }

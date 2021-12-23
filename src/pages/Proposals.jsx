@@ -4,14 +4,14 @@ import { Heading } from '@chakra-ui/react'
 import { request } from 'graphql-request'
 import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
-import { query, pageQuery, variables, processEvents } from './data/Events'
+import { query, pageQuery, variables, processProposals } from './data/Proposals'
 
 
-export default function Events() {
+export default function Proposals() {
   const defaultParams = {data: [], columns: []}
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPage, setTotalPage] = useState(0)
-  const [events, setEvents] = useState(defaultParams)
+  const [proposals, setProposals] = useState(defaultParams)
 
   useEffect(() => {
     async function getData() {
@@ -19,20 +19,20 @@ export default function Events() {
       const res = await request(ENDPOINT, query, variables)
       const pageRes = await request(ENDPOINT, pageQuery, variables)
       console.log(res, pageRes)
-      setTotalPage((pageRes.events.totalCount
-        ? Math.floor((pageRes.events.totalCount-1) / variables.limit)
+      setTotalPage((pageRes.proposals.totalCount
+        ? Math.floor((pageRes.proposals.totalCount-1) / variables.limit)
         : 0))
-      const eventParams = processEvents(res.events.nodes)
-      return eventParams
+      const params = processProposals(res.proposals.nodes)
+      return params
     }
-    getData().then(eventParams => setEvents(eventParams))
+    getData().then(params => setProposals(params))
   }, [currentPage])
 
   return (
     <>
-      <Heading>Events</Heading>
+      <Heading>Proposals</Heading>
       <br />
-      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...events} />
+      <Table currentPage={currentPage} totalPage={totalPage} goToPage={setCurrentPage} {...proposals} />
     </>
   )
 }

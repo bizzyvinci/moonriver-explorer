@@ -27,8 +27,8 @@ export const pageQuery = gql`
 
 export function processDelegations(nodes) {
   const data = nodes.map(d => ({
-    delegator: getLink(d.delegatorId, 'account'),
-    candidate: getLink(d.candidateId, 'account'),
+    delegator: getLink(d.delegatorId, 'stake'),
+    candidate: getLink(d.candidateId, 'stake'),
     value: reduceValue(d.value),
   }))
 

@@ -122,7 +122,7 @@ export default function Account() {
       variables.erc20TransferOffset = erc20TransferCurrentPage * variables.limit
       const res = await request(ENDPOINT, erc20TransferQuery, variables)
       console.log(res)
-      const params = processErc20Transfers(res.eRC20Transfers.nodes)
+      const params = processErc20Transfers(res.erc20Transfers.nodes)
       return params
     }
     getData().then(params => {
@@ -136,7 +136,7 @@ export default function Account() {
       variables.erc721TransferOffset = erc721TransferCurrentPage * variables.limit
       const res = await request(ENDPOINT, erc721TransferQuery, variables)
       console.log(res)
-      const params = processErc721Transfers(res.eRC721Transfers.nodes)
+      const params = processErc721Transfers(res.erc721Transfers.nodes)
       return params
     }
     getData().then(params => {

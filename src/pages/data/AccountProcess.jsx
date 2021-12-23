@@ -5,16 +5,16 @@ export function processCounts(res) {
     extrinsics: res.extrinsics.totalCount,
     transactions: res.transactions.totalCount,
     transfers: res.transfers.totalCount,
-    erc20Transfers: res.eRC20Transfers.totalCount,
-    erc721Transfers: res.eRC721Transfers.totalCount,
+    erc20Transfers: res.erc20Transfers.totalCount,
+    erc721Transfers: res.erc721Transfers.totalCount,
   }
   return counts
 }
 
 export function processAccount(res) {
-  const { account, eRC20Balances, eRC721Balances, rewards, eRC20Transfers, eRC721Transfers } = res
+  const { account, erc20Balances, erc721Balances, rewards, erc20Transfers, erc721Transfers } = res
 
-  // Process eRC20Balances and eRC721Balances as dropdown menu for Tokens
+  // Process erc20Balances and erc721Balances as dropdown menu for Tokens
 
   const overviewData = [
     {
@@ -47,11 +47,11 @@ export function processAccount(res) {
     },
     {
       label: 'Created At',
-      value: getLink(account.createdAt, 'transaction')
+      value: getLink(account.createdAt, 'tx')
     },
     {
       label: 'Token Page',
-      value: (eRC20Transfers.totalCount > 0 || eRC721Transfers.totalCount > 0) && getLink(account.id, 'token')
+      value: (erc20Transfers.totalCount > 0 || erc721Transfers.totalCount > 0) && getLink(account.id, 'token')
     },
     {
       label: 'Stake Page',
@@ -85,7 +85,7 @@ export function processExtrinsics(nodes) {
 
 export function processTransactions(nodes) {
   const transactionData = nodes.map(d => {return {
-    id: getLink(d.id, 'transaction'),
+    id: getLink(d.id, 'tx'),
     block: getLink(d.block.id, 'block'),
     timestamp: d.block.timestamp,
     from: d.fromId,
@@ -129,8 +129,8 @@ export function processTransfers(nodes) {
 
 export function processErc20Transfers(nodes) {
   const erc20TransferData = nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'tx'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,
@@ -150,8 +150,8 @@ export function processErc20Transfers(nodes) {
 
 export function processErc721Transfers(nodes) {
   const erc721TransferData = nodes.map(d => {return {
-    transaction: getLink(d.log.transactionId, 'transaction'),
-    timestamp: d.log.block.timestamp,
+    transaction: getLink(d.transactionHash, 'tx'),
+    timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
     token: d.tokenId,

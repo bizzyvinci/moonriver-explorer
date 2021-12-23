@@ -3,17 +3,29 @@ import { Box } from '@chakra-ui/react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Warning from './components/Warning'
+import Footer from './components/Footer'
+import Error from './pages/Error'
+
 import Homepage from './pages/Homepage'
 import Blocks from './pages/Blocks'
 import Extrinsics from './pages/Extrinsics'
 import Transactions from './pages/Transactions'
 import Events from './pages/Events'
 import Accounts from './pages/Accounts'
+
 import Candidates from './pages/Candidates'
 import Delegators from './pages/Delegators'
 import Delegations from './pages/Delegations'
+import Referendums from './pages/Referendums'
+import Proposals from './pages/Proposals'
+import Transfers from './pages/Transfers'
+import Erc20Transfers from './pages/Erc20Transfers'
+import Erc721Transfers from './pages/Erc721Transfers'
+
 import Block from './pages/Block'
 import Extrinsic from './pages/Extrinsic'
+import Transaction from './pages/Transaction'
+
 import Account from './pages/Account'
 import Token from './pages/Token'
 import Stake from './pages/Stake'
@@ -29,22 +41,24 @@ const linkPage = [
 
   {path: '/candidates', component: <Candidates />},
   {path: '/delegators', component: <Delegators />},
-   {path: '/delegations', component: <Delegations />},
+  {path: '/delegations', component: <Delegations />},
 
-  // {path: '/referenda', component: <Homepage />},
-  // {path: '/proposals', component: <Homepage />},
+  {path: '/referendums', component: <Referendums />},
+  {path: '/proposals', component: <Proposals />},
 
-  // {path: '/transfers', component: <Homepage />},
-  // {path: '/erc20-transfers', component: <Homepage />},
-  // {path: '/erc721-transfers', component: <Homepage />},
+  {path: '/transfers', component: <Transfers />},
+  {path: '/erc20-transfers', component: <Erc20Transfers />},
+  {path: '/erc721-transfers', component: <Erc721Transfers />},
 
   {path: '/block/:id', children: <Block />},
   {path: '/extrinsic/:id', children: <Extrinsic />},
-  // {path: '/transaction/:id', children: <Homepage />},
+  {path: '/tx/:id', children: <Transaction />},
   
   {path: '/account/:id', children: <Account />},
   {path: '/token/:id', children: <Token />},
-  {path: '/stake/:id', children: <Stake />}
+  {path: '/stake/:id', children: <Stake />},
+
+  {path: '/error', component: <Error />}
 ]
 
 function App() {
@@ -71,6 +85,8 @@ function App() {
             }
           })}
         </Switch>
+        <br />
+        <Footer />
       </Router>
     </Box>
   );
