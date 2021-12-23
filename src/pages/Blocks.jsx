@@ -1,10 +1,9 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Heading } from '@chakra-ui/react'
-import { request, gql } from 'graphql-request'
+import { request } from 'graphql-request'
 import { ENDPOINT } from '../utils'
 import Table from '../components/Table'
-import Pagination from '../components/Pagination'
 import { query, pageQuery, variables, processBlocks } from './data/Blocks'
 
 

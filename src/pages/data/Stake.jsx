@@ -41,7 +41,7 @@ export const stakeQuery = gql`
 `
 
 export const candidateQuery  = gql`
-  query($id: String!, $limit: Int, $candidateOffset) {
+  query($id: String!, $limit: Int, $candidateOffset: Int) {
     delegations(first: $limit, offset: $candidateOffset, filter: {delegatorId: {equalTo: $id}}, orderBy: VALUE_DESC) {
       nodes {
         delegatorId
@@ -53,7 +53,7 @@ export const candidateQuery  = gql`
 `
 
 export const delegatorQuery  = gql`
-  query($id: String!, $limit: Int, $delegatorOffset) {
+  query($id: String!, $limit: Int, $delegatorOffset: Int) {
     delegations(first: $limit, offset: $delegatorOffset, filter: {candidateId: {equalTo: $id}}, orderBy: VALUE_DESC) {
       nodes {
         delegatorId
@@ -65,7 +65,7 @@ export const delegatorQuery  = gql`
 `
 
 export const rewardQuery  = gql`
-  query($id: String!, $limit: Int, $rewardOffset) {
+  query($id: String!, $limit: Int, $rewardOffset: Int) {
     rewards(first: $limit, offset: $rewardOffset, filter: {accountId: {equalTo: $id}}, orderBy: BLOCK_NUMBER_DESC) {
       nodes {
         blockNumber
@@ -79,8 +79,12 @@ export const rewardQuery  = gql`
 
 export function processCounts(res) {
   const counts = {
-    candidates: res.delegator.delegations.totalCount,
-    delegators: res.candidate.delegations.totalCount,
+    candidates: res.delegator 
+      ? res.delegator.delegations.totalCount
+      : 0,
+    delegators: res.candidate
+      ? res.candidate.delegations.totalCount
+      : 0,
     rewards: res.rewards.totalCount,
   }
   return counts
@@ -101,7 +105,7 @@ export function processStake(res) {
       label: 'Delegators',
       value: candidate?.delegations.totalCount > 100
         ? '100+'
-        : String(candidate?.delegations.totalCount)
+        : candidate ? String(candidate?.delegations.totalCount) : null
     },
     // as a delegator
     {
@@ -112,7 +116,7 @@ export function processStake(res) {
       label: 'Candidates',
       value: delegator?.delegations.totalCount > 100
         ? '100+'
-        : String(delegator?.delegations.totalCount)
+        : delegator ? String(delegator?.delegations.totalCount) : null
     },
   ]
   const overviewParams = {data: overviewData}

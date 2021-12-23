@@ -100,7 +100,7 @@ export function processToken(res) {
   let erc721Data = []
 
   if (erc20Token) {
-    const erc20Data = [
+    erc20Data = [
       {label: 'Account', value: getLink(erc20Token.id)},
       {label: 'Name', value: erc20Token.name},
       {label: 'Symbol', value: erc20Token.symbol},
@@ -111,7 +111,7 @@ export function processToken(res) {
   }
 
   if (erc721Token) {
-    const erc721Data = [
+    erc721Data = [
       {label: 'Account', value: getLink(erc721Token.id)},
       {label: 'Name', value: erc721Token.name},
       {label: 'Symbol', value: erc721Token.symbol},

@@ -36,7 +36,7 @@ export const query = gql`
     candidates(first: $limit, filter: {isChosen: {equalTo: true}}, orderBy:[SELF_BONDED_DESC]) {
       nodes {
         id
-        joinedExtrinsicId
+        joined
         isChosen
         selfBonded
         delegations {totalCount}
@@ -115,9 +115,7 @@ export function processCandidates(nodes) {
     isChosen: successIcon(d.isChosen),
     selfBonded: reduceValue(d.selfBonded),
     delegators: d.delegations.totalCount,
-    joined: d.joinedExtrinsicId
-      ? getLink(d.joinedExtrinsicId, 'extrinsic')
-      : 'Genesis',
+    joined: d.joined || 'Genesis',
   }})
 
   const columns = [

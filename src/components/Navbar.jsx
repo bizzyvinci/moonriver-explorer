@@ -49,7 +49,7 @@ export default function Navbar() {
         justify='space-between'>
         <Flex direction='row' w='-webkit-fill-available'>
           <Flex flex={{ base: 1 }}>
-            <Link href='#'>
+            <Link href='/'>
               <Image src={brandLogo} alt='brand logo' h={{base: '30px', md:'20px', sm:'30px'}} />
             </Link>
             <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
