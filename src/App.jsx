@@ -17,6 +17,11 @@ import Extrinsic from './pages/Extrinsic'
 import Account from './pages/Account'
 import Token from './pages/Token'
 import Stake from './pages/Stake'
+import Referendums from './pages/Referendums'
+import Proposals from './pages/Proposals'
+import Transfers from './pages/Transfers'
+import Erc20Transfers from './pages/Erc20Transfers'
+import Erc721Transfers from './pages/Erc721Transfers'
 
 
 const linkPage = [
@@ -31,12 +36,12 @@ const linkPage = [
   {path: '/delegators', component: <Delegators />},
   {path: '/delegations', component: <Delegations />},
 
-  // {path: '/referenda', component: <Homepage />},
-  // {path: '/proposals', component: <Homepage />},
+  {path: '/referendums', component: <Referendums />},
+  {path: '/proposals', component: <Proposals />},
 
-  // {path: '/transfers', component: <Homepage />},
-  // {path: '/erc20-transfers', component: <Homepage />},
-  // {path: '/erc721-transfers', component: <Homepage />},
+  {path: '/transfers', component: <Transfers />},
+  {path: '/erc20-transfers', component: <Erc20Transfers />},
+  {path: '/erc721-transfers', component: <Erc721Transfers />},
 
   {path: '/block/:id', children: <Block />},
   {path: '/extrinsic/:id', children: <Extrinsic />},

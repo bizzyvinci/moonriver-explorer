@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Image,
   Input,
   Stack,
@@ -14,7 +13,6 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
   useDisclosure,
   useColorMode
 } from '@chakra-ui/react';
@@ -294,8 +292,8 @@ const NAV_ITEMS = [
     label: 'Governance',
     children: [
       {
-        label: 'Referenda',
-        href: '/referenda',
+        label: 'Referendums',
+        href: '/referendums',
       },
       {
         label: 'Proposals',
