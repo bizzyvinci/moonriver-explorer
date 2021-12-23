@@ -47,7 +47,7 @@ export function processAccount(res) {
     },
     {
       label: 'Created At',
-      value: getLink(account.createdAt, 'transaction')
+      value: getLink(account.createdAt, 'tx')
     },
     {
       label: 'Token Page',
@@ -85,7 +85,7 @@ export function processExtrinsics(nodes) {
 
 export function processTransactions(nodes) {
   const transactionData = nodes.map(d => {return {
-    id: getLink(d.id, 'transaction'),
+    id: getLink(d.id, 'tx'),
     block: getLink(d.block.id, 'block'),
     timestamp: d.block.timestamp,
     from: d.fromId,
@@ -129,7 +129,7 @@ export function processTransfers(nodes) {
 
 export function processErc20Transfers(nodes) {
   const erc20TransferData = nodes.map(d => {return {
-    transaction: getLink(d.transactionHash, 'transaction'),
+    transaction: getLink(d.transactionHash, 'tx'),
     timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,
@@ -150,7 +150,7 @@ export function processErc20Transfers(nodes) {
 
 export function processErc721Transfers(nodes) {
   const erc721TransferData = nodes.map(d => {return {
-    transaction: getLink(d.transactionHash, 'transaction'),
+    transaction: getLink(d.transactionHash, 'tx'),
     timestamp: d.timestamp,
     from: d.fromId,
     to: d.toId,

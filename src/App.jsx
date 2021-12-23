@@ -9,19 +9,23 @@ import Extrinsics from './pages/Extrinsics'
 import Transactions from './pages/Transactions'
 import Events from './pages/Events'
 import Accounts from './pages/Accounts'
+
 import Candidates from './pages/Candidates'
 import Delegators from './pages/Delegators'
 import Delegations from './pages/Delegations'
-import Block from './pages/Block'
-import Extrinsic from './pages/Extrinsic'
-import Account from './pages/Account'
-import Token from './pages/Token'
-import Stake from './pages/Stake'
 import Referendums from './pages/Referendums'
 import Proposals from './pages/Proposals'
 import Transfers from './pages/Transfers'
 import Erc20Transfers from './pages/Erc20Transfers'
 import Erc721Transfers from './pages/Erc721Transfers'
+
+import Block from './pages/Block'
+import Extrinsic from './pages/Extrinsic'
+import Transaction from './pages/Transaction'
+
+import Account from './pages/Account'
+import Token from './pages/Token'
+import Stake from './pages/Stake'
 
 
 const linkPage = [
@@ -45,7 +49,7 @@ const linkPage = [
 
   {path: '/block/:id', children: <Block />},
   {path: '/extrinsic/:id', children: <Extrinsic />},
-  // {path: '/transaction/:id', children: <Homepage />},
+  {path: '/tx/:id', children: <Transaction />},
   
   {path: '/account/:id', children: <Account />},
   {path: '/token/:id', children: <Token />},

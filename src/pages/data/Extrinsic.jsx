@@ -43,7 +43,7 @@ export function processExtrinsic(extrinsic, eventCount) {
     {label: 'Id', value: extrinsic.id},
     {label: 'Hash', value: extrinsic.hash},
     {label: 'Transaction', value: extrinsic.transaction?.id
-      ? getLink(extrinsic.transaction.id, 'transaction')
+      ? getLink(extrinsic.transaction.id, 'tx')
       : null},
     {label: 'Block', 
      value: getLink(extrinsic.block.id, 'block')},

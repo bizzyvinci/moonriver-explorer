@@ -37,7 +37,7 @@ export function processTransfers(nodes) {
     to: getLink(d.toId, 'account'),
     token: getLink(d.toId, 'token'),
     value: reduceValue(d.value),
-    transaction: getLink(d.transactionHash, 'transaction')
+    transaction: getLink(d.transactionHash, 'tx')
   }})
 
   const columns = [

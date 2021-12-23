@@ -30,7 +30,7 @@ export const pageQuery = gql`
 
 export function processTransactions(nodes) {
   const data = nodes.map(d => {return {
-    id: getLink(d.id, 'transaction'),
+    id: getLink(d.id, 'tx'),
     block: getLink(d.block.id, 'block'),
     date: d.block.timestamp,
     from: getLink(d.fromId, 'account'),
