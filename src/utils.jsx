@@ -6,7 +6,7 @@ import bigInt from 'big-integer'
 export const PAGE_LIMIT = 50
 export const DECIMAL = 18
 export const BIGINT_DECIMAL = bigInt(10**DECIMAL)
-export const ENDPOINT = 'https://api.subquery.network/sq/bizzyvinci/moonriver__Yml6e'
+export const ENDPOINT = 'https://api.subquery.network/sq/bizzyvinci/moonriver'
 
 export const getLink = (id, route) => {
   if (id) {
