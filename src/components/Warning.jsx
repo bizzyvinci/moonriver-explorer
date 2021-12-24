@@ -40,7 +40,7 @@ export default function Warning() {
   return (
     <Alert status='error'>
       <AlertIcon />
-      <AlertTitle mr={2}>Data has not been fully indexed!</AlertTitle>
+      <AlertTitle mr={2}>Account balance is not done right and data has not been fully indexed!</AlertTitle>
       <AlertDescription>Current Block: {currentBlock} Target Block:{targetBlock}</AlertDescription>
       <CloseButton position='absolute' right='8px' top='8px' />
     </Alert>

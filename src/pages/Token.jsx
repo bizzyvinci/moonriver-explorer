@@ -18,7 +18,7 @@ export default function Token() {
 
   const defaultParams = {data: [], columns: []}
   const [overview, setOverview] = useState({data: []})
-  const [isErc20, setIsErc20] = useState(false)
+  const [isErc20, setIsErc20] = useState(true)
   
   const [transferCurrentPage, setTransferCurrentPage] = useState(0)
   const [transferTotalPage, setTransferTotalPage] = useState(-1)
@@ -55,7 +55,7 @@ export default function Token() {
       return params
     }
     getData().then(params => {
-      setOverview(params)
+      isErc20 ? setOverview(params.erc20) : setOverview(params.erc721)
     })
   }, [])
 

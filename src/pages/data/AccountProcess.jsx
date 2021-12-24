@@ -1,4 +1,6 @@
 import { getLink, reduceValue, successIcon } from '../../utils'
+import { Button, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
+import { ChevronDownIcon } from '@chakra-ui/icons'
 
 export function processCounts(res) {
   const counts = {
@@ -15,6 +17,26 @@ export function processAccount(res) {
   const { account, erc20Balances, erc721Balances, rewards, erc20Transfers, erc721Transfers } = res
 
   // Process erc20Balances and erc721Balances as dropdown menu for Tokens
+  const tokenDropdown = (nodes, title) => {
+    if (nodes.length > 0) {
+      return (
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            {title}
+          </MenuButton>
+          <MenuList>
+            {nodes.map(v => (
+              <MenuItem as='a' href={`/token/${v.tokenId}`} key={v.tokenId}>
+                {v.tokenId}: {title==='ERC20' ? reduceValue(v.value) : v.value}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Menu>
+      )
+    } else {
+      return null
+    }
+  }
 
   const overviewData = [
     {
@@ -34,12 +56,16 @@ export function processAccount(res) {
       value: reduceValue(account.totalBalance)
     },
     {
-      label: 'Tokens',
-      value: null
+      label: 'ERC20 Tokens',
+      value: tokenDropdown(erc20Balances.nodes, 'ERC20')
+    },
+    {
+      label: 'ERC721 Tokens',
+      value: tokenDropdown(erc721Balances.nodes, 'ERC721')
     },
     {
       label: 'Is Contract',
-      value: account.isContract && 'True'
+      value: account.isContract && successIcon(true)
     },
     {
       label: 'Created By', 
