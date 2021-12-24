@@ -10,9 +10,9 @@ export const variables = {
 
 export const countQuery = gql`
   query($id: String) {
-    erc20Transfers(filter: {transactionHash: equalTo: $id}) {totalCount}
-    erc721Transfers(filter: {transactionHash: equalTo: $id}) {totalCount}
-    logs(filter: {transactionId: equalTo: $id}) {totalCount}
+    erc20Transfers(filter: {transactionHash: {equalTo: $id}}) {totalCount}
+    erc721Transfers(filter: {transactionHash: {equalTo: $id}}) {totalCount}
+    logs(filter: {transactionId: {equalTo: $id}}) {totalCount}
   }
 `
 
@@ -37,8 +37,8 @@ export const transactionQuery = gql`
 `
 
 export const erc20TransferQuery = gql`
-  query($limit: Int, $erc20Offset: Int) {
-    erc20Transfers(filter: {transactionHash: equalTo: $id},
+  query($id: String, $limit: Int, $erc20Offset: Int) {
+    erc20Transfers(filter: {transactionHash: {equalTo: $id}},
       first: $limit, offset: $erc20Offset, orderBy: ID_ASC
     ) {
       nodes {
@@ -52,8 +52,8 @@ export const erc20TransferQuery = gql`
 `
 
 export const erc721TransferQuery = gql`
-  query($limit: Int, $erc721Offset: Int) {
-    erc721Transfers(filter: {transactionHash: equalTo: $id},
+  query($id: String, $limit: Int, $erc721Offset: Int) {
+    erc721Transfers(filter: {transactionHash: {equalTo: $id}},
       first: $limit, offset: $erc721Offset, orderBy: ID_ASC
     ) {
       nodes {
@@ -67,8 +67,8 @@ export const erc721TransferQuery = gql`
 `
 
 export const logQuery = gql`
-  query($limit: Int, $logOffset: Int) {
-    logs(filter: {transactionId: equalTo: $id},
+  query($id: String, $limit: Int, $logOffset: Int) {
+    logs(filter: {transactionId: {equalTo: $id}},
       first: $limit, offset: $logOffset, orderBy: LOG_INDEX_ASC
     ) {
       nodes {
@@ -100,11 +100,11 @@ export function processTransaction(res) {
     {label: 'Extrinsic', value: getLink(transaction.extrinsicId, 'extrinsic')},
     {label: 'From', value: getLink(transaction.fromId, 'account')},
     {label: 'To', value: getLink(transaction.toId, 'account')},
-    {label: 'Value', value: transaction.value},
+    {label: 'Value', value: reduceValue(transaction.value)},
     {label: 'Nonce', value: transaction.nonce},
     {label: 'Gas Limit', value: transaction.gasLimit},
-    {label: 'Gas Price', value: transaction.gasPrice},
-    {label: 'Max Fee Per Gas', value: transaction.maxFeePerGas},
+    {label: 'Gas Price', value: reduceValue(transaction.gasPrice)},
+    {label: 'Max Fee Per Gas', value: reduceValue(transaction.maxFeePerGas)},
     //{label: 'Data', value: transaction.data},
     //{label: 'Arguments', value: transaction.arguments},
   ]

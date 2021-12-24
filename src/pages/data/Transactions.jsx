@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -35,7 +35,7 @@ export function processTransactions(nodes) {
     date: d.block.timestamp,
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
-    value: d.value,
+    value: reduceValue(d.value),
   }})
 
   const columns = [

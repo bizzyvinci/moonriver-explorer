@@ -127,7 +127,7 @@ export default function Transaction() {
 
   return (
     <>
-      <Heading>Transaction: {id}</Heading>
+      <Heading size='md'>Transaction: {id}</Heading>
       <Overview {...overview} />
       <br /><br />
       <Tabs data={tabData} />

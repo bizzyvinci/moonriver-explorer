@@ -111,7 +111,7 @@ export function processTransactions(nodes) {
 
 export function processCandidates(nodes) {
   const data = nodes.map(d => {return {
-    id: getLink(d.id, 'account'),
+    id: getLink(d.id, 'stake'),
     isChosen: successIcon(d.isChosen),
     selfBonded: reduceValue(d.selfBonded),
     delegators: d.delegations.totalCount,
