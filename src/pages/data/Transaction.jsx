@@ -114,9 +114,9 @@ export function processTransaction(res) {
 
 export function processErc20Transfers(nodes) {
   const erc20TransferData = nodes.map(d => {return {
-    from: d.fromId,
-    to: d.toId,
-    token: d.tokenId,
+    from: getLink(d.fromId, 'account'),
+    to: getLink(d.toId, 'account'),
+    token: getLink(d.tokenId, 'token'),
     value: reduceValue(d.value)
   }})
   const erc20TransferColumns = [
@@ -131,16 +131,16 @@ export function processErc20Transfers(nodes) {
 
 export function processErc721Transfers(nodes) {
   const erc721TransferData = nodes.map(d => {return {
-    from: d.fromId,
-    to: d.toId,
-    token: d.tokenId,
+    from: getLink(d.fromId, 'account'),
+    to: getLink(d.toId, 'account'),
+    token: getLink(d.tokenId, 'token'),
     value: d.value
   }})
   const erc721TransferColumns = [
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
-    {Header: 'Token ID', accessor: 'token'},
-    {Header: 'Value', accessor: 'value'},
+    {Header: 'Token', accessor: 'token'},
+    {Header: 'Token ID', accessor: 'value'},
   ]
   const erc721TransferParams = {data: erc721TransferData, columns: erc721TransferColumns}
   return erc721TransferParams

@@ -112,7 +112,7 @@ export function processExtrinsics(nodes) {
 
 export function processTransactions(nodes) {
   const transactionData = nodes.map(d => {return {
-    id: getLink(d.id, 'transaction'),
+    id: getLink(d.id, 'tx'),
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
     value: reduceValue(d.value),
