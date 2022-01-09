@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [TransactionsOrderBy!]) {
-    transactions(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [TransactionsOrderBy!], $offset: Int) {
+    transactions(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         block {id, timestamp}

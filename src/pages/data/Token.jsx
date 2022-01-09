@@ -157,8 +157,8 @@ export function processTransfers(res) {
     {Header: 'Timestamp', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
-    {Header: 'Token ID', accessor: 'token'},
-    {Header: 'Value', accessor: 'value'},
+    {Header: 'Token', accessor: 'token'},
+    {Header: 'Token ID', accessor: 'value'},
   ]
   const erc721TransferParams = {data: erc721TransferData, columns: erc721TransferColumns}
   

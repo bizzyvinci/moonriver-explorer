@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [ProposalsOrderBy!]) {
-    proposals(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [ProposalsOrderBy!], $offset: Int) {
+    proposals(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         author

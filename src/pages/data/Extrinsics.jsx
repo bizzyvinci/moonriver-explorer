@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [ExtrinsicsOrderBy!]) {
-    extrinsics(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [ExtrinsicsOrderBy!], $offset: Int) {
+    extrinsics(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         block {id, timestamp}

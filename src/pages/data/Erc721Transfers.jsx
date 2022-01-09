@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [Erc721TransfersOrderBy!]) {
-    erc721Transfers(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [Erc721TransfersOrderBy!], $offset: Int) {
+    erc721Transfers(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         blockNumber
         timestamp

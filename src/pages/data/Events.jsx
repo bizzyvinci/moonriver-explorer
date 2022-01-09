@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [EventsOrderBy!]) {
-    events(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [EventsOrderBy!], $offset: Int) {
+    events(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         extrinsicId

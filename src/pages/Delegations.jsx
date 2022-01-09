@@ -7,7 +7,7 @@ import Table from '../components/Table'
 import { query, pageQuery, variables, processDelegations } from './data/Delegations'
 
 
-export default function Blocks() {
+export default function Delegations() {
   const defaultParams = {data: [], columns: []}
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPage, setTotalPage] = useState(0)
