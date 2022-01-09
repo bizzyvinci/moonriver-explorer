@@ -7,7 +7,7 @@ import Table from '../components/Table'
 import { query, pageQuery, variables, processTransactions } from './data/Transactions'
 
 
-export default function Blocks() {
+export default function Transactions() {
   const defaultParams = {data: [], columns: []}
   const [currentPage, setCurrentPage] = useState(0)
   const [totalPage, setTotalPage] = useState(0)
@@ -26,7 +26,7 @@ export default function Blocks() {
       return transactionParams
     }
     getData().then(transactionParams => setTransactions(transactionParams))
-  }, [])
+  }, [currentPage])
 
   return (
     <>

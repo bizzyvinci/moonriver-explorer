@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [CandidatesOrderBy!]) {
-    candidates(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [CandidatesOrderBy!], $offset: Int) {
+    candidates(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         isChosen

@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [AccountsOrderBy!]) {
-    accounts(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [AccountsOrderBy!], $offset: Int) {
+    accounts(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         freeBalance

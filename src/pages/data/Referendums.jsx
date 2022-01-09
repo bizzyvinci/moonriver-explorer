@@ -8,8 +8,8 @@ export const variables = {
 }
 
 export const query = gql`
-  query($limit: Int, $orderBy: [ReferendumsOrderBy!]) {
-    referendums(first: $limit, orderBy: $orderBy) {
+  query($limit: Int, $orderBy: [ReferendumsOrderBy!], $offset: Int) {
+    referendums(first: $limit, orderBy: $orderBy, offset: $offset) {
       nodes {
         id
         threshold
