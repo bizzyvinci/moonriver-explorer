@@ -55,7 +55,7 @@ export default function Token() {
       return params
     }
     getData().then(params => {
-      isErc20 ? setOverview(params.erc20) : setOverview(params.erc721)
+      params.erc20.data.length>0 ? setOverview(params.erc20) : setOverview(params.erc721)
     })
   }, [])
 

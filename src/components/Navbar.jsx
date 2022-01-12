@@ -331,6 +331,6 @@ const NAV_ITEMS = [
   },
   {
     label: 'Charts',
-    href: '#',
+    href: '/charts',
   },
 ];
