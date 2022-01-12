@@ -21,6 +21,7 @@ import Proposals from './pages/Proposals'
 import Transfers from './pages/Transfers'
 import Erc20Transfers from './pages/Erc20Transfers'
 import Erc721Transfers from './pages/Erc721Transfers'
+import Charts from './pages/Charts'
 
 import Block from './pages/Block'
 import Extrinsic from './pages/Extrinsic'
@@ -49,6 +50,7 @@ const linkPage = [
   {path: '/transfers', component: <Transfers />},
   {path: '/erc20-transfers', component: <Erc20Transfers />},
   {path: '/erc721-transfers', component: <Erc721Transfers />},
+  {path: '/charts', component: <Charts />},
 
   {path: '/block/:id', children: <Block />},
   {path: '/extrinsic/:id', children: <Extrinsic />},
