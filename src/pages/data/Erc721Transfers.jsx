@@ -35,7 +35,7 @@ export function processTransfers(nodes) {
     timestamp: d.timestamp,
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
-    token: getLink(d.toId, 'token'),
+    token: getLink(d.tokenId, 'token'),
     value: d.value,
     transaction: getLink(d.transactionHash, 'tx')
   }})

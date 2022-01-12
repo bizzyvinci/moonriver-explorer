@@ -94,7 +94,7 @@ export function processTransactions(nodes) {
     date: d.block.timestamp,
     from: d.fromId,
     to: d.toId,
-    value: d.value,
+    value: reduceValue(d.value),
   }})
 
   const columns = [

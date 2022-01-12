@@ -41,8 +41,8 @@ export const eventQuery = gql`
 export function processExtrinsic(extrinsic, eventCount) {
 	const overviewData = [
     {label: 'Id', value: extrinsic.id},
-    {label: 'Hash', value: extrinsic.hash},
-    {label: 'Transaction', value: extrinsic.transaction?.id
+    {label: 'Extrinsic Hash', value: extrinsic.hash},
+    {label: 'EVM Hash', value: extrinsic.transaction?.id
       ? getLink(extrinsic.transaction.id, 'tx')
       : null},
     {label: 'Block', 
