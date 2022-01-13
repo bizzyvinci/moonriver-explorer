@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, timeSince } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -30,7 +30,7 @@ export const pageQuery = gql`
 export function processBlocks(nodes) {
   const data = nodes.map(d => {return {
     id: getLink(d.id, 'block'),
-    date: d.timestamp,
+    date: timeSince(d.timestamp),
     extrinsics: d.extrinsics.totalCount,
     transactions: d.transactions.totalCount,
     events: d.events.totalCount

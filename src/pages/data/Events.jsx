@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, getLink } from '../../utils'
+import { PAGE_LIMIT, getLink, timeSince } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -34,7 +34,7 @@ export function processEvents(nodes) {
     id: d.id,
     extrinsic: getLink(d.extrinsicId, 'extrinsic'),
     block: getLink(d.block.id, 'block'),
-    date: d.block.timestamp,
+    date: timeSince(d.block.timestamp),
     section: d.section,
     method: d.method,
     //docs: d.docs,
@@ -45,7 +45,7 @@ export function processEvents(nodes) {
     {Header: 'Event', accessor: 'id'},
     {Header: 'Extrinsic', accessor: 'extrinsic'},
     {Header: 'Block', accessor: 'block'},
-    {Header: 'Date', accessor: 'date'},
+    {Header: 'Time', accessor: 'date'},
     {Header: 'Section', accessor: 'section'},
     {Header: 'Method', accessor: 'method'},
   ]

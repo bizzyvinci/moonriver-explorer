@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, successIcon } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon,
+  timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -43,13 +45,14 @@ export function processExtrinsic(extrinsic, eventCount) {
     {label: 'Id', value: extrinsic.id},
     {label: 'Extrinsic Hash', value: extrinsic.hash},
     {label: 'EVM Hash', value: extrinsic.transaction?.id
-      ? getLink(extrinsic.transaction.id, 'tx')
+      ? getLink(extrinsic.transaction.id, 'tx', 0)
       : null},
     {label: 'Block', 
      value: getLink(extrinsic.block.id, 'block')},
+    {label: 'Age', value: timeSince(extrinsic.block.timestamp)},
     {label: 'Timestamp', value: extrinsic.block.timestamp},
     {label: 'Signer', value: extrinsic.signerId
-      ? getLink(extrinsic.signerId, 'account')
+      ? getLink(extrinsic.signerId, 'account', 0)
       : null},
     {label: 'Success', value: successIcon(extrinsic.success)},
     {label: 'Section', value: extrinsic.section},

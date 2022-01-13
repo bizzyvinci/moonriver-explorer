@@ -1,4 +1,4 @@
-import { getLink, reduceValue, successIcon } from '../../utils'
+import { getLink, reduceValue, successIcon, timeSince } from '../../utils'
 import { Button, Menu, MenuButton, MenuList, MenuItem } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 
@@ -69,19 +69,19 @@ export function processAccount(res) {
     },
     {
       label: 'Created By', 
-      value: getLink(account.creatorId, 'account')
+      value: getLink(account.creatorId, 'account', 0)
     },
     {
       label: 'Created At',
-      value: getLink(account.createdAt, 'tx')
+      value: getLink(account.createdAt, 'tx', 0)
     },
     {
       label: 'Token Page',
-      value: (erc20Transfers.totalCount > 0 || erc721Transfers.totalCount > 0) && getLink(account.id, 'token')
+      value: (erc20Transfers.totalCount > 0 || erc721Transfers.totalCount > 0) && getLink(account.id, 'token', 0)
     },
     {
       label: 'Stake Page',
-      value: rewards.totalCount > 0 && getLink(account.id, 'stake')
+      value: rewards.totalCount > 0 && getLink(account.id, 'stake', 0)
     }
   ]
   const overviewParams = {data: overviewData}
@@ -92,7 +92,7 @@ export function processExtrinsics(nodes) {
   const extrinsicData = nodes.map(d => {return {
     id: getLink(d.id, 'extrinsic'),
     block: getLink(d.block.id, 'block'),
-    timestamp: d.block.timestamp,
+    timestamp: timeSince(d.block.timestamp),
     success: successIcon(d.success),
     section: d.section,
     method: d.method,
@@ -100,8 +100,8 @@ export function processExtrinsics(nodes) {
   const extrinsicColumns = [
     {Header: 'Extrinsic', accessor: 'id'},
     {Header: 'Block', accessor: 'block'},
-    {Header: 'Success', accessor: 'timestamp'},
-    {Header: 'Timestamp', accessor: 'success'},
+    {Header: 'Time', accessor: 'timestamp'},
+    {Header: 'Success', accessor: 'success'},
     {Header: 'Section', accessor: 'section'},
     {Header: 'Method', accessor: 'method'},
   ]
@@ -113,16 +113,16 @@ export function processTransactions(nodes) {
   const transactionData = nodes.map(d => {return {
     id: getLink(d.id, 'tx'),
     block: getLink(d.block.id, 'block'),
-    timestamp: d.block.timestamp,
-    from: d.fromId,
-    to: d.toId,
+    timestamp: timeSince(d.block.timestamp),
+    from: getLink(d.fromId, 'account'),
+    to: getLink(d.toId, 'account'),
     value: reduceValue(d.value),
     success: successIcon(d.success),
   }})
   const transactionColumns = [
     {Header: 'Transaction', accessor: 'id'},
     {Header: 'Block', accessor: 'block'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Value', accessor: 'value'},
@@ -136,7 +136,7 @@ export function processTransfers(nodes) {
   const transferData = nodes.map(d => {return {
     id: d.id,
     extrinsic: getLink(d.extrinsicId, 'extrinsic'),
-    timestamp: d.block.timestamp,
+    timestamp: timeSince(d.block.timestamp),
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
     value: reduceValue(d.value)
@@ -144,7 +144,7 @@ export function processTransfers(nodes) {
   const transferColumns = [
     {Header: 'Event', accessor: 'id'},
     {Header: 'Extrinsic', accessor: 'extrinsic'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Value', accessor: 'value'},
@@ -156,15 +156,15 @@ export function processTransfers(nodes) {
 export function processErc20Transfers(nodes) {
   const erc20TransferData = nodes.map(d => {return {
     transaction: getLink(d.transactionHash, 'tx'),
-    timestamp: d.timestamp,
-    from: d.fromId,
-    to: d.toId,
-    token: d.tokenId,
+    timestamp: timeSince(d.timestamp),
+    from: getLink(d.fromId, 'account'),
+    to: getLink(d.toId, 'account'),
+    token: getLink(d.tokenId, 'token'),
     value: reduceValue(d.value)
   }})
   const erc20TransferColumns = [
     {Header: 'Transaction', accessor: 'transaction'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Token', accessor: 'token'},
@@ -177,15 +177,15 @@ export function processErc20Transfers(nodes) {
 export function processErc721Transfers(nodes) {
   const erc721TransferData = nodes.map(d => {return {
     transaction: getLink(d.transactionHash, 'tx'),
-    timestamp: d.timestamp,
-    from: d.fromId,
-    to: d.toId,
-    token: d.tokenId,
+    timestamp: timeSince(d.timestamp),
+    from: getLink(d.fromId, 'account'),
+    to: getLink(d.toId, 'account'),
+    token: getLink(d.tokenId, 'token'),
     value: d.value
   }})
   const erc721TransferColumns = [
     {Header: 'Transaction', accessor: 'transaction'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Token ID', accessor: 'token'},

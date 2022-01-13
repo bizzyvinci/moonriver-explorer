@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, successIcon, reduceValue } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon, reduceValue,
+  timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -70,6 +72,7 @@ export const eventQuery = gql`
 export function processBlock(block) {
   const overviewData = [
     {label: 'Number', value: block.id},
+    {label: 'Age', value: timeSince(block.timestamp)},
     {label: 'Timestamp', value: block.timestamp},
     {label: 'Hash', value: block.hash},
     {label: 'Parent Hash', value: block.parentHash},

@@ -1,4 +1,4 @@
-import { PAGE_LIMIT, reduceValue } from '../../utils'
+import { PAGE_LIMIT, reduceValue, getLink } from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -30,7 +30,7 @@ export const pageQuery = gql`
 export function processProposals(nodes) {
   const data = nodes.map(d => {return {
     id: d.id,
-    author: d.author,
+    author: getLink(d.author, 'account'),
     deposit: reduceValue(d.deposit),
     preimage: d.preimage,
     status: d.timeline.at(-1)['status']
