@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, reduceValue, successIcon } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue, successIcon,
+  timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -96,10 +98,11 @@ export function processTransaction(res) {
 	const overviewData = [
     {label: 'Hash', value: transaction.id},
     {label: 'Block', value: getLink(transaction.block.id, 'block')},
+    {label: 'Age', value: timeSince(transaction.block.timestamp)},
     {label: 'Timestamp', value: transaction.block.timestamp},
     {label: 'Extrinsic', value: getLink(transaction.extrinsicId, 'extrinsic')},
-    {label: 'From', value: getLink(transaction.fromId, 'account')},
-    {label: 'To', value: getLink(transaction.toId, 'account')},
+    {label: 'From', value: getLink(transaction.fromId, 'account', 0)},
+    {label: 'To', value: getLink(transaction.toId, 'account', 0)},
     {label: 'Value', value: reduceValue(transaction.value)},
     {label: 'Nonce', value: transaction.nonce},
     {label: 'Gas Limit', value: transaction.gasLimit},

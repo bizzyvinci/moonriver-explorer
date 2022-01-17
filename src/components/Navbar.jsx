@@ -21,27 +21,20 @@ import {
   ChevronDownIcon,
   ChevronRightIcon
 } from '@chakra-ui/icons';
-import { useHistory } from 'react-router-dom'
 import brandLogo from '../assets/moonriver-logo.svg'
 import { getUrl } from '../search'
 
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
-  let searchTerm = ''
-  let history = useHistory()
-
+  
   function handleSearch(e) {
-    //console.log(e)
+    //console.log(`${e.target.value}${e.key}`)
     if (e.key === 'Enter') {
-      console.log(searchTerm)
-      e.target.value = ''
-      getUrl(searchTerm).then(url => {
-        url ? history.push(url) : history.push('/error')
+      const target = e.target.value.toLowerCase()
+      getUrl(target).then(url => {
+        url ? window.open(url, "_self") : window.open(`/missing/${target}`, "_self")
       })
-      searchTerm = ''
-    } else {
-      searchTerm += e.key
     }
   }
 

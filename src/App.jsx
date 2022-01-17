@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/Navbar'
 import Warning from './components/Warning'
 import Footer from './components/Footer'
-import Error from './pages/Error'
 
 import Homepage from './pages/Homepage'
 import Blocks from './pages/Blocks'
@@ -31,6 +30,8 @@ import Account from './pages/Account'
 import Token from './pages/Token'
 import Stake from './pages/Stake'
 
+import Missing from './pages/Missing'
+import Error from './pages/Error'
 
 const linkPage = [
   {path: '/', component: <Homepage />},
@@ -60,6 +61,7 @@ const linkPage = [
   {path: '/token/:id', children: <Token />},
   {path: '/stake/:id', children: <Stake />},
 
+  {path: '/missing/:id', component: <Missing />},
   {path: '/error', component: <Error />}
 ]
 

@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, successIcon, reduceValue, sum } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon, reduceValue
+  , sum, timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -40,7 +42,7 @@ export function processCandidates(nodes) {
     delegators: d.delegations.totalCount > 100
       ? '100+'
       : String(d.delegations.totalCount),
-    joined: d.joined || 'Genesis',
+    joined: timeSince(d.joined) || 'Genesis',
   }))
 
   const columns = [

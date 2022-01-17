@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, successIcon } from '../../utils'
+import { PAGE_LIMIT, getLink, successIcon,
+  timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -32,7 +34,7 @@ export function processExtrinsics(nodes) {
   const data = nodes.map(d => {return {
     id: getLink(d.id, 'extrinsic'),
     block: getLink(d.block.id, 'block'),
-    date: d.block.timestamp,
+    date: timeSince(d.block.timestamp),
     success: successIcon(d.success),
     signed: successIcon(d.isSigned),
     section: d.section,
@@ -42,7 +44,7 @@ export function processExtrinsics(nodes) {
   const columns = [
     {Header: 'Extrinsic', accessor: 'id'},
     {Header: 'Block', accessor: 'block'},
-    {Header: 'Date', accessor: 'date'},
+    {Header: 'Time', accessor: 'date'},
     {Header: 'Success', accessor: 'success'},
     {Header: 'Signed', accessor: 'signed'},
     {Header: 'Section', accessor: 'section'},

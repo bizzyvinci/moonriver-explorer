@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, reduceValue, sum } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue, sum,
+  truncateText, timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -93,7 +95,7 @@ export function processCounts(res) {
 export function processStake(res) {
   const { candidate, delegator } = res
   const overviewData = [
-    {label: 'Account', value: getLink((candidate?.id || res.delegator?.id), 'account')},
+    {label: 'Account', value: getLink((candidate?.id || res.delegator?.id), 'account', 0)},
     // as a candidate
     {label: 'Self Bonded', value: reduceValue(candidate?.selfBonded)},
     {
@@ -126,7 +128,7 @@ export function processStake(res) {
 export function processCandidates(nodes) {
   const candidateData = nodes.map(d => {return {
     candidate: getLink(d.candidateId, 'stake'),
-    delegator: d.delegatorId,
+    delegator: truncateText(d.delegatorId),
     value: reduceValue(d.value),
   }})
   const candidateColumns = [
@@ -141,7 +143,7 @@ export function processCandidates(nodes) {
 export function processDelegators(nodes) {
   const delegatorData = nodes.map(d => {return {
     delegator: getLink(d.delegatorId, 'stake'),
-    candidate: d.candidateId,
+    candidate: truncateText(d.candidateId),
     value: reduceValue(d.value),
   }})
   const delegatorColumns = [
@@ -156,13 +158,13 @@ export function processDelegators(nodes) {
 export function processRewards(nodes) {
   const rewardData = nodes.map(d => {return {
     block: getLink(d.blockNumber, 'block'),
-    timestamp: d.timestamp,
-    account: d.accountId,
+    timestamp: timeSince(d.timestamp),
+    account: truncateText(d.accountId),
     value: reduceValue(d.value),
   }})
   const rewardColumns = [
     {Header: 'Block', accessor: 'block'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'Account', accessor: 'account'},
     {Header: 'Value', accessor: 'value'}
   ]

@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Box,
   Table as CTable,
   Thead,
   Tbody,
@@ -27,29 +28,31 @@ export default function Table({ columns, data, variant, currentPage, totalPage, 
   // Render the UI for your table
   return (
     <>
-      <CTable  variant={variant || 'simple'} {...getTableProps()}>
-        <Thead>
-          {headerGroups.map(headerGroup => (
-            <Tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row)
-            return (
-              <Tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
-                })}
+      <Box display='block' overflowX='auto' whiteSpace='nowrap' >
+        <CTable variant={variant || 'simple'} {...getTableProps()}>
+          <Thead>
+            {headerGroups.map(headerGroup => (
+              <Tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map(column => (
+                  <Th {...column.getHeaderProps()}>{column.render('Header')}</Th>
+                ))}
               </Tr>
-            )
-          })}
-        </Tbody>
-      </CTable>
+            ))}
+          </Thead>
+          <Tbody {...getTableBodyProps()}>
+            {rows.map((row, i) => {
+              prepareRow(row)
+              return (
+                <Tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>
+                  })}
+                </Tr>
+              )
+            })}
+          </Tbody>
+        </CTable>
+      </Box>
       {totalPage > 0 && <Pagination currentPage={currentPage} totalPage={totalPage} goToPage={goToPage} />}
     </>
   )

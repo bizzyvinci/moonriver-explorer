@@ -1,4 +1,6 @@
-import { PAGE_LIMIT, getLink, reduceValue } from '../../utils'
+import { PAGE_LIMIT, getLink, reduceValue,
+  truncateText, timeSince
+} from '../../utils'
 import { gql } from 'graphql-request'
 
 export const variables = {
@@ -101,7 +103,7 @@ export function processToken(res) {
 
   if (erc20Token) {
     erc20Data = [
-      {label: 'Account', value: getLink(erc20Token.id, 'account')},
+      {label: 'Account', value: getLink(erc20Token.id, 'account', 0)},
       {label: 'Type', value: 'ERC 20'},
       {label: 'Name', value: erc20Token.name},
       {label: 'Symbol', value: erc20Token.symbol},
@@ -113,7 +115,7 @@ export function processToken(res) {
 
   if (erc721Token) {
     erc721Data = [
-      {label: 'Account', value: getLink(erc721Token.id, 'account')},
+      {label: 'Account', value: getLink(erc721Token.id, 'account', 0)},
       {label: 'Type', value: 'ERC 721'},
       {label: 'Name', value: erc721Token.name},
       {label: 'Symbol', value: erc721Token.symbol},
@@ -127,16 +129,16 @@ export function processToken(res) {
 
 export function processTransfers(res) {
   const erc20TransferData = res.erc20Transfers.nodes.map(d => {return {
-    transaction: getLink(d.transactionHash, 'transaction'),
-    timestamp: d.timestamp,
+    transaction: getLink(d.transactionHash, 'tx'),
+    timestamp: timeSince(d.timestamp),
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
-    token: d.tokenId,
+    token: truncateText(d.tokenId),
     value: reduceValue(d.value)
   }})
   const erc20TransferColumns = [
     {Header: 'Transaction', accessor: 'transaction'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Token', accessor: 'token'},
@@ -145,16 +147,16 @@ export function processTransfers(res) {
   const erc20TransferParams = {data: erc20TransferData, columns: erc20TransferColumns}
   
   const erc721TransferData = res.erc721Transfers.nodes.map(d => {return {
-    transaction: getLink(d.transactionHash, 'transaction'),
-    timestamp: d.timestamp,
+    transaction: getLink(d.transactionHash, 'tx'),
+    timestamp: timeSince(d.timestamp),
     from: getLink(d.fromId, 'account'),
     to: getLink(d.toId, 'account'),
-    token: d.tokenId,
+    token: truncateText(d.tokenId),
     value: d.value
   }})
   const erc721TransferColumns = [
     {Header: 'Transaction', accessor: 'transaction'},
-    {Header: 'Timestamp', accessor: 'timestamp'},
+    {Header: 'Time', accessor: 'timestamp'},
     {Header: 'From', accessor: 'from'},
     {Header: 'To', accessor: 'to'},
     {Header: 'Token', accessor: 'token'},
@@ -168,8 +170,8 @@ export function processTransfers(res) {
 
 export function processBalances(res) {
   const erc20BalanceData = res.erc20Balances.nodes.map(d => {return {
-    account: getLink(d.accountId, 'account'),
-    //token: d.tokenId,
+    account: getLink(d.accountId, 'account', 0),
+    //token: truncateText(d.tokenId),
     value: reduceValue(d.value)
   }})
   const erc20BalanceColumns = [
@@ -180,8 +182,8 @@ export function processBalances(res) {
   const erc20BalanceParams = {data: erc20BalanceData, columns: erc20BalanceColumns}
   
   const erc721BalanceData = res.erc721Balances.nodes.map(d => {return {
-    account: getLink(d.accountId, 'account'),
-    //token: d.tokenId,
+    account: getLink(d.accountId, 'account', 0),
+    //token: truncateText(d.tokenId),
     value: d.value
   }})
   const erc721BalanceColumns = [
